@@ -1,0 +1,15 @@
+name: best_effort_parser
+description: Best-effort parsing for names and dates with unknown formats (like unstructured user input)
+version: 0.0.1
+homepage: https://github.com/jack-r-warren/best_effort_parser
+author: Jack Warren <jack@jackwarren.info>
+
+environment:
+  sdk: '>=2.2.0 <3.0.0'
+
+dependencies:
+  intl: ^0.15.7
+
+dev_dependencies:
+  pedantic: ^1.0.0
+  test: ^1.0.0
