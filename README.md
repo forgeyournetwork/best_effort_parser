@@ -2,6 +2,8 @@
 
 > Author: [Jack Warren][author site]
 
+[![Build Status](https://travis-ci.com/jack-r-warren/best_effort_parser.svg?branch=master)](https://travis-ci.com/jack-r-warren/best_effort_parser)
+
 Provides assistance with parsing arbitrary, unstructured user input into output types of your choice.
 
 
