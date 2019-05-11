@@ -1,4 +1,5 @@
 import 'package:best_effort_parser/name.dart';
+import 'package:best_effort_parser/src/name/parsed_name.dart';
 import 'package:test/test.dart';
 
 main() {
@@ -108,7 +109,7 @@ main() {
         expect(result.nonDroppingParticle, isEmpty);
       });
 
-      test('handles uppercase particles as non-dropping', (){
+      test('handles uppercase particles as non-dropping', () {
         var result = NameParser.basic().parse('Willem De Kooning');
         expect(result.given, 'Willem');
         expect(result.family, 'Kooning');
@@ -116,58 +117,106 @@ main() {
         expect(result.nonDroppingParticle, 'De');
       });
 
-      test('handles uppercase particles as non-dropping in <last>, <first>', (){
+      test('handles uppercase particles as non-dropping in <last>, <first>', () {
         var result = NameParser.basic().parse('De Kooning, Willem');
         expect(result.given, 'Willem');
         expect(result.family, 'Kooning');
         expect(result.droppingParticle, isEmpty);
         expect(result.nonDroppingParticle, 'De');
       });
-      
-      test('handles suffixes', (){
+
+      test('handles suffixes', () {
         var result = NameParser.basic().parse('Elizabeth Alexandra Mary II');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes when comma-separated', (){
+      test('handles suffixes when comma-separated', () {
         var result = NameParser.basic().parse('Elizabeth Alexandra Mary, II');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes in <last>, <first> when the suffix follows last', (){
+      test('handles suffixes in <last>, <first> when the suffix follows last', () {
         var result = NameParser.basic().parse('Mary II, Elizabeth Alexandra');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes in <last>, <first> when the suffix follows last with a comma', (){
+      test('handles suffixes in <last>, <first> when the suffix follows last with a comma', () {
         var result = NameParser.basic().parse('Mary, II, Elizabeth Alexandra');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes in <last>, <first> when the suffix is at the end', (){
+      test('handles suffixes in <last>, <first> when the suffix is at the end', () {
         var result = NameParser.basic().parse('Mary, Elizabeth Alexandra II');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes in <last>, <first> when the suffix is at the end with a comma', (){
+      test('handles suffixes in <last>, <first> when the suffix is at the end with a comma', () {
         var result = NameParser.basic().parse('Mary, Elizabeth Alexandra, II');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
         expect(result.suffix, 'II');
       });
 
+      test('handles all-caps names as expected, with particles being non-dropping', () {
+        var result = NameParser.basic().parse('WILLEM DE KOONING');
+        expect(result.given, 'WILLEM');
+        expect(result.family, 'KOONING');
+        expect(result.nonDroppingParticle, 'DE');
+      });
 
-      // TODO: more testing
+      test('handles multiple of different parts', () {
+        final target = ParsedName('family1 family2',
+            given: 'given1 given2',
+            droppingParticle: 'de van',
+            nonDroppingParticle: 'Di La',
+            suffix: 'Jr. III PhD.');
+        final parser = NameParser.basic();
+        final samples = <String>[
+          'given1 given2 de van Di La family1 family2 Jr. III PhD.',
+          'given1 given2 de Di van La family1 family2 Jr. III PhD.',
+          'given1 given2 de van Di La family1 family2, Jr. III PhD.',
+          'given1 given2 de van Di La family1 family2 Jr., III PhD.',
+          'given1 given2 de van Di La family1 family2, Jr. III, PhD.',
+          'family1 family2 Jr. III PhD., given1 given2 de van Di La',
+          'family1 family2, Jr. III PhD., given1 given2 de van Di La',
+          'family1 family2, Jr., III PhD., given1, given2, de van, Di La',
+          'family1 family2 Jr., given1 given2 de van Di La III PhD.',
+          'Di La family1 family2, given1 given2 de van, Jr. III PhD.',
+          'de van Di La family1 family2, given1 given2, Jr. III PhD.',
+          'Di La de van family1 family2, given1, given2 Jr. III PhD.',
+        ].map(parser.parse);
+        expect(samples, everyElement(equals(target)));
+      });
+    });
+  });
+
+  group('ParsedName', () {
+    group(' operator == ', () {
+      test('returns false on different types', () {
+        expect(ParsedName('foo') == 5, isFalse);
+      });
+
+      test('returns false if fields are different, true if same', () {
+        final samples = [
+          ParsedName('abc'),
+          ParsedName('', given: 'abc'),
+          ParsedName('', droppingParticle: 'abc'),
+          ParsedName('', nonDroppingParticle: 'abc'),
+          ParsedName('', suffix: 'abc')
+        ];
+        for (int a = 0; a < 5; a++)
+          for (int b = 0; b < 5; b++) expect(samples[a] == samples[b], a == b);
+      });
     });
   });
 }
