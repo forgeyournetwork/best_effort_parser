@@ -6,8 +6,8 @@ import 'parsed_name.dart';
 ///
 /// The values given as parameters to this function will never be null. If a name does not have a
 /// given component, an empty string will be given to this function's corresponding parameter.
-typedef ParsedNameStorage<Output> = Output Function(String family, String given,
-    String droppingParticle, String nonDroppingParticle, String suffix);
+typedef ParsedNameStorage<Output> = Output Function(String family,
+    {String given, String droppingParticle, String nonDroppingParticle, String suffix});
 
 // TODO: explain [NameParser]
 class NameParser<Output> {
@@ -101,7 +101,8 @@ class NameParser<Output> {
     } else if (nonSuffixParts.isEmpty)
       // This means we have some sort of empty input or that everything is suffixes... return
       // immediately with everything we have as the family name.
-      return _parsedNameStorage(input, '', '', '', '');
+      return _parsedNameStorage(input,
+          given: '', droppingParticle: '', nonDroppingParticle: '', suffix: '');
     else
       name = nonSuffixParts.first;
 
@@ -143,7 +144,10 @@ class NameParser<Output> {
     }
 
     // Remaining space parts are all part of the given name; we have everything to return now.
-    return _parsedNameStorage(familyParts.join(' '), spaceParts.join(' '),
-        droppingParticleParts.join(' '), nonDroppingParticleParts.join(' '), suffixParts.join(' '));
+    return _parsedNameStorage(familyParts.join(' '),
+        given: spaceParts.join(' '),
+        droppingParticle: droppingParticleParts.join(' '),
+        nonDroppingParticle: nonDroppingParticleParts.join(' '),
+        suffix: suffixParts.join(' '));
   }
 }

@@ -12,8 +12,11 @@ class ParsedName {
 
   String get suffix => _suffix;
 
-  ParsedName(String family, String given, String droppingParticle, String nonDroppingParticle,
-      String suffix) {
+  ParsedName(String family,
+      {String given = '',
+      String droppingParticle = '',
+      String nonDroppingParticle = '',
+      String suffix = ''}) {
     _family = family ?? '';
     _given = given ?? '';
     _droppingParticle = droppingParticle ?? '';
@@ -21,10 +24,18 @@ class ParsedName {
     _suffix = suffix ?? '';
   }
 
-  static ParsedName constantConstructor(String family, String given, String droppingParticle,
-          String nonDroppingParticle, String suffix) =>
-      ParsedName(family, given, droppingParticle, nonDroppingParticle, suffix);
+  static ParsedName constantConstructor(String family,
+          {String given = '',
+          String droppingParticle = '',
+          String nonDroppingParticle = '',
+          String suffix = ''}) =>
+      ParsedName(family,
+          given: given,
+          droppingParticle: droppingParticle,
+          nonDroppingParticle: nonDroppingParticle,
+          suffix: suffix);
 
+  @override
   String toString() => [
         if (given.isNotEmpty) given,
         if (droppingParticle.isNotEmpty) droppingParticle,
@@ -33,5 +44,14 @@ class ParsedName {
         if (suffix.isNotEmpty) suffix,
       ].join(' ');
 
-  // TODO: diagnostic version of [toString]
+  @override
+  bool operator ==(other) =>
+      other is ParsedName &&
+      family == other.family &&
+      given == other.given &&
+      droppingParticle == other.droppingParticle &&
+      nonDroppingParticle == other.nonDroppingParticle &&
+      suffix == other.suffix;
+
+// TODO: diagnostic version of [toString]
 }
