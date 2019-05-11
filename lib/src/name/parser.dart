@@ -96,6 +96,18 @@ class NameParser<Output> {
     // get something roughly matching "<first> <last>".
     String name;
     if (nonSuffixParts.length > 1) {
+      // If the last part ends in a suffix, we have "<last>, <first> <suffixes>", so strip
+      // suffixes off of the end before rotating <last> around.
+      if (nonSuffixParts.last
+          .split(_whitespace)
+          .last
+          .replaceAll(_punctuation, '')
+          .contains(_suffixes)) {
+        List<String> lastParts = nonSuffixParts.removeLast().split(_whitespace);
+        while (lastParts.last.replaceAll(_punctuation, '').contains(_suffixes))
+          suffixParts.addFirst(lastParts.removeLast());
+        nonSuffixParts.add(lastParts.join(' '));
+      }
       nonSuffixParts.add(nonSuffixParts.removeFirst());
       name = nonSuffixParts.join(' ');
     } else if (nonSuffixParts.isEmpty)
