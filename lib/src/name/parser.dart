@@ -2,15 +2,46 @@ import 'dart:collection';
 
 import 'parsed_name.dart';
 
-/// The type of function [NameParser] uses to generate its [Output].
+/// The type of function [NameParser] uses to generate its [T].
 ///
 /// The values given as parameters to this function will never be null. If a name does not have a
 /// given component, an empty string will be given to this function's corresponding parameter.
-typedef ParsedNameStorage<Output> = Output Function(String family,
+typedef ParsedNameStorage<T> = T Function(String family,
     {String given, String droppingParticle, String nonDroppingParticle, String suffix});
 
-// TODO: explain [NameParser]
-class NameParser<Output> {
+/// A parser designed to extract a person's name from an arbitrary string. The [parse] method
+/// will create a [T] object with the person's family name, given name, particles (dropping and
+/// non-dropping), and suffixes.
+///
+/// - *family*: A person's last name(s) (the "Fontaine" in "Jean de La Fontaine")
+/// - *given*: A person's first and middle name(s) (the "Jean" in "Jean de La Fontaine")
+/// - *dropping particle*: particle(s) before the person's last name that are ignored if only the
+/// last name is shown. Since the dropping nature of a particle is typically determined by
+/// geographic factors, this parser uses the generality that lowercase particles are dropping
+/// (the "de" in "Jean de La Fontaine")
+/// - *non-dropping particle*: particles(s) before the person's last name that are *not* ignored
+/// if only the last name is shown. A particle with any uppercase characters is considered
+/// non-dropping (the "La" in "Jean de La Fontaine")
+/// - *suffix*: abbreviations after a person's last name (the "III" in "Bill Gates III")
+///
+/// Names may be in a wide variety of formats. Beyond "<first> <last>" and "<last>, <first>"
+/// formats, [parse] will detect particles and suffixes in any reasonably-correct position,
+/// handling comma-separation ("Gates, Bill, III"), split particles ("La Fontaine, Jean de"), and
+/// other edge cases.
+///
+/// Of course, it should be noted that this parsing is very much a best-effort. In particular,
+/// there are numerous particles, and whether a particle is dropping or non-dropping is dependent
+/// upon the locale (and even time period) where the name originated. In many cases, [parse]'s
+/// behavior of lumping an unrecognized particle in with the family or given name isn't a major
+/// problem, as the information isn't ever lost, it might just be mis-categorized.
+///
+/// If correct categorization is required (like in the case of citation software, where
+/// alphabetization has style-specific rules of different types of particles), there are two
+/// approaches. One is to supply customized particle, suffix, or punctuation detection during
+/// instantiation. The other is to allow customization between parsing and storage: the results
+/// of [parse] may be used to pre-fill fields, or to detect cases where customization should be
+/// promoted (perhaps if a particle is detected, double-check the name with the user).
+class NameParser<T> {
   /// A [RegExp] pattern matching a variety of name suffixes.
   ///
   /// Included:
@@ -43,7 +74,7 @@ class NameParser<Output> {
 
   /// Internal storage for the [ParsedNameStorage] function, to be used to return the output of
   /// [parse].
-  ParsedNameStorage<Output> _parsedNameStorage;
+  ParsedNameStorage<T> _parsedNameStorage;
 
   /// Constructor for [NameParser], requiring a [ParsedNameStorage] to return as output.
   ///
@@ -55,7 +86,7 @@ class NameParser<Output> {
   ///
   /// Since the default values of the optional parameters are strings, they are converted to
   /// case-insensitive [RegExp] objects here.
-  NameParser(ParsedNameStorage<Output> parsedNameStorage,
+  NameParser(ParsedNameStorage<T> parsedNameStorage,
       {Pattern suffixes = defaultSuffixes,
       Pattern particles = defaultParticles,
       Pattern punctuation = defaultPunctuation}) {
@@ -77,8 +108,17 @@ class NameParser<Output> {
       NameParser<ParsedName>(ParsedName.constantConstructor,
           suffixes: suffixes, particles: particles, punctuation: punctuation);
 
-  // TODO: explain [parse]
-  Output parse(String input) {
+  /// Parse the [input] name into a [T] object, separating out the family name, given name, any
+  /// particles (dropping and non-dropping), and suffixes.
+  ///
+  /// The [T] created will never be given null values (all named optional fields will be supplied
+  /// with values), with empty strings being supplied if nothing existed for that category.
+  T parse(String input) {
+    if (input == null) input = '';
+    if (input.isEmpty)
+      return _parsedNameStorage(input,
+          given: '', droppingParticle: '', nonDroppingParticle: '', suffix: '');
+
     // Separate out obvious suffixes in the name. They could be anywhere, but they will be in the
     // correct order with themselves. Splits parts internally based on whitespace so that a comma
     // part with multiple suffixes will still be properly detected.

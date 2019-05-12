@@ -5,6 +5,18 @@ import 'package:test/test.dart';
 main() {
   group('NameParser', () {
     group('.parse(String input) ', () {
+      test('returns in the case of null or empty input', () {
+        ['', null].map(NameParser.basic().parse).forEach((result) {
+          [
+            result.given,
+            result.family,
+            result.droppingParticle,
+            result.nonDroppingParticle,
+            result.suffix
+          ].forEach((str) => expect(str, isEmpty));
+        });
+      });
+
       test('groups first and middle names', () {
         var result = NameParser.basic().parse('Jack Ramsey Warren');
         expect(result.given, 'Jack Ramsey');
