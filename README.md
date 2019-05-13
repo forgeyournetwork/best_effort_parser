@@ -7,7 +7,7 @@
 Provides assistance with parsing arbitrary, unstructured user input into output types of your choice.
 
 ## Name Parsing
-#### `'best_effort_parser/name.dart'`
+#### `best_effort_parser/name.dart`
 
 Provides parsing of names by categorizing different parts:
 - **family**: A person's last name(s)
