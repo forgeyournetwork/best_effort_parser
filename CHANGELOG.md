@@ -1,3 +1,7 @@
+## 0.2.6
+
+- Skip cleanup 
+
 ## 0.2.5
 
 - Yet more Travis fixes

@@ -9,6 +9,7 @@ jobs:
       script: pub run test
       deploy:
         - provider: script
+          skip_cleanup: true
           script: tool/deploy.sh
           on:
             tags: true
