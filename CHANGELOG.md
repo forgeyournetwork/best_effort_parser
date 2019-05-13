@@ -1,3 +1,7 @@
+## 0.2.7
+
+- Manual Travis deployment because "deploy:" doesn't appear to work
+
 ## 0.2.6
 
 - Skip cleanup 

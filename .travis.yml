@@ -2,18 +2,20 @@ language: dart
 dart:
   - stable
 script: pub get
+stages:
+  - test
+  - name: deploy
+    if: tag =~ ^[0-9]+\.[0-9]+\.[0-9]+$
 jobs:
   include:
     - stage: test
       name: "run tests"
       script: pub run test
-      deploy:
-        - provider: script
-          skip_cleanup: true
-          script: tool/deploy.sh
-          on:
-            tags: true
     - name: "coverage"
       before_script: gem install coveralls-lcov
       script: pub run test_coverage
       after_success: coveralls-lcov --repo-token $COVERALLS_TOKEN coverage/lcov.info
+    - stage: deploy
+      name: "deploy to pub"
+      before_script: pub get
+      script: tool/deploy.sh
