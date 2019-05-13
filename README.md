@@ -2,7 +2,7 @@
 
 > Author: [Jack Warren][author site]
 
-[![Build Status](https://travis-ci.com/jack-r-warren/best_effort_parser.svg?branch=master)](https://travis-ci.com/jack-r-warren/best_effort_parser) [![Coverage Status](https://coveralls.io/repos/github/jack-r-warren/best_effort_parser/badge.svg?branch=master)](https://coveralls.io/github/jack-r-warren/best_effort_parser?branch=master)
+[![Build Status](https://travis-ci.com/jack-r-warren/best_effort_parser.svg?branch=master)](https://travis-ci.com/jack-r-warren/best_effort_parser) [![Coverage Status](https://coveralls.io/repos/github/jack-r-warren/best_effort_parser/badge.svg?branch=master)](https://coveralls.io/github/jack-r-warren/best_effort_parser?branch=master) [![Pub](https://img.shields.io/pub/v/best_effort_parser.svg)](https://pub.dartlang.org/packages/best_effort_parser)
 
 Provides assistance with parsing arbitrary, unstructured user input into output types of your choice.
 
