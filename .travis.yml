@@ -16,4 +16,3 @@ deploy:
     script: tool/deploy.sh
     on:
       tags: true
-      branch: master

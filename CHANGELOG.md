@@ -1,3 +1,7 @@
+## 0.2.4
+
+- More Travis fixes
+
 ## 0.2.3
 
 - Configure deployment script `deploy.sh`
