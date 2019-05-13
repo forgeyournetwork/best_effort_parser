@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 
 main() {
   group('NameParser', () {
-    group('.parse(String input) ', () {
+    group('.parse(String input)', () {
       test('returns in the case of null or empty input', () {
         ['', null].map(NameParser.basic().parse).forEach((result) {
           [
@@ -213,7 +213,7 @@ main() {
   });
 
   group('ParsedName', () {
-    group(' operator == ', () {
+    group('operator ==', () {
       test('returns false on different types', () {
         expect(ParsedName('foo') == 5, isFalse);
       });
@@ -228,6 +228,43 @@ main() {
         ];
         for (int a = 0; a < 5; a++)
           for (int b = 0; b < 5; b++) expect(samples[a] == samples[b], a == b);
+      });
+    });
+
+    group('toString()', () {
+      test('uses space separation by default', () {
+        var result = NameParser.basic().parse('Jack Warren');
+        expect(result.toString(), 'Jack Warren');
+      });
+
+      test('can use a custom separator', () {
+        var result = NameParser.basic().parse('Jack Warren');
+        expect(result.toString(separator: '.'), 'Jack.Warren');
+      });
+    });
+
+    group('diagonisticString()', () {
+      test('fills its default parameters', () {
+        var result =
+            NameParser.basic().parse('given1 given2 de van Di La family1 family2 Jr. III PhD.');
+        expect(
+            result.diagnosticString(),
+            '[Given]: given1 given2 [Dropping Particle]: de van [Non-dropping Particle]: Di La '
+            '[Family]: family1 family2 [Suffix]: Jr. III PhD.');
+      });
+
+      test('can have customized labels/separators', () {
+        var result =
+            NameParser.basic().parse('given1 given2 de van Di La family1 family2 Jr. III PhD.');
+        expect(
+            result.diagnosticString(
+                separator: '-',
+                givenLabel: '',
+                droppingParticleLabel: '',
+                nonDroppingParticleLabel: '',
+                familyLabel: '',
+                suffixLabel: ''),
+            result.toString(separator: '-'));
       });
     });
   });

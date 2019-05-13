@@ -111,8 +111,11 @@ class NameParser<T> {
   /// Parse the [input] name into a [T] object, separating out the family name, given name, any
   /// particles (dropping and non-dropping), and suffixes.
   ///
-  /// The [T] created will never be given null values (all named optional fields will be supplied
-  /// with values), with empty strings being supplied if nothing existed for that category.
+  /// If [input] is not empty, the family parameter of [T] (the first and only positional
+  /// parameter) is guaranteed to be non-empty.
+  ///
+  /// All parameters of [T] are guaranteed to be non-null (if nothing exists for that parameter,
+  /// an empty string will be given).
   T parse(String input) {
     if (input == null) input = '';
     if (input.isEmpty)
