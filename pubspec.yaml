@@ -1,6 +1,6 @@
 name: best_effort_parser
 description: Best-effort parsing for names with unknown formats (like unstructured user input)
-version: 0.2.2
+version: 0.2.3
 homepage: https://github.com/jack-r-warren/best_effort_parser
 author: Jack Warren <jack@jackwarren.info>
 

@@ -1,3 +1,7 @@
+## 0.2.3
+
+- Configure deployment script `deploy.sh`
+
 ## 0.2.2
 
 - Configure Travis and Coveralls
