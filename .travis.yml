@@ -1,17 +1,14 @@
 language: dart
 dart:
   - stable
-install:
-  - gem install coveralls-lcov
+script: pub get
 jobs:
   include:
-    - stage: compile
-      name: "get dependencies"
-      script: pub get
     - stage: test
       name: "run tests"
       script: pub run test
     - name: "coverage"
+      before_script: gem install coveralls-lcov
       script: pub run test_coverage
       after_success: coveralls-lcov --repo-token $COVERALLS_TOKEN coverage/lcov.info
 deploy:
