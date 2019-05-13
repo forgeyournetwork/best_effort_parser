@@ -1,3 +1,8 @@
+## 0.2.1
+
+- Updated `README.md`
+- Name parsing example (`name_example.dart`)
+
 ## 0.2.0
 
 - Name parsing with documentation, testing, and diagnostics
