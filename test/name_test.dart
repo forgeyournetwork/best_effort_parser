@@ -209,6 +209,10 @@ main() {
         ].map(parser.parse);
         expect(samples, everyElement(equals(target)));
       });
+
+      test('puts suffixes as the family if that\'s all we have', () {
+        expect(NameParser.basic().parse('I II III').family, 'I II III');
+      });
     });
   });
 
