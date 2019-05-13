@@ -1,3 +1,7 @@
+## 0.2.2
+
+- Configure Travis and Coveralls
+
 ## 0.2.1
 
 - Updated `README.md`
