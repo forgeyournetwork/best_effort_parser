@@ -13,8 +13,7 @@ jobs:
       script: pub run test
     - name: "coverage"
       script: pub run test_coverage
-after_success:
-  - coveralls-lcov --repo-token $COVERALLS_TOKEN coverage/lcov.info
+      after_success: coveralls-lcov --repo-token $COVERALLS_TOKEN coverage/lcov.info
 deploy:
   - provider: script
     script: tool/deploy.sh
