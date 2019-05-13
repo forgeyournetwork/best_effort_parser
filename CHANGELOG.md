@@ -1,3 +1,7 @@
+## 0.2.5
+
+- Yet more Travis fixes
+
 ## 0.2.4
 
 - More Travis fixes
