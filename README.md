@@ -2,7 +2,7 @@
 
 > Author: [Jack Warren][author site]
 
-[![Build Status](https://travis-ci.com/jack-r-warren/best_effort_parser.svg?branch=master)](https://travis-ci.com/jack-r-warren/best_effort_parser)
+[![Build Status](https://travis-ci.com/jack-r-warren/best_effort_parser.svg?branch=master)](https://travis-ci.com/jack-r-warren/best_effort_parser) [![Coverage Status](https://coveralls.io/repos/github/jack-r-warren/best_effort_parser/badge.svg?branch=master)](https://coveralls.io/github/jack-r-warren/best_effort_parser?branch=master)
 
 Provides assistance with parsing arbitrary, unstructured user input into output types of your choice.
 
