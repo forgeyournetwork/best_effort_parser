@@ -1,3 +1,14 @@
 language: dart
 dart:
   - stable
+install:
+  - gem install coveralls-lcov
+script: pub run test_coverage
+after_success:
+  - coveralls-lcov --repo-token $COVERALLS_TOKEN coverage/lcov.info
+deploy:
+  - provider: script
+    script: tool/deploy.sh
+    on:
+      tags: true
+      branch: master
