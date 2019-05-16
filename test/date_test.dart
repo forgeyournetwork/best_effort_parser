@@ -1,9 +1,18 @@
 import 'dart:math';
 
+import 'package:best_effort_parser/date.dart';
 import 'package:test/test.dart';
 import 'package:best_effort_parser/src/date/parsed_date.dart';
 
 main() {
+  group('NameParser', () {
+    group('.parse(String input)', () {
+      test('handles compact singular dates', () {
+        expect(DateParser.basic().parse('1/1/2000'), equals([ParsedDate(2000, 1, 1)]));
+      });
+    });
+  });
+
   group('ParsedDate', () {
     group('operator ==', () {
       test('returns false if given a different type', () {
