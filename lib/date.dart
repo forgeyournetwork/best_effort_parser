@@ -113,12 +113,12 @@ class DateParser<T> {
     final List<int> dayParts = [], monthParts = [], yearParts = [];
 
     // collect parts
-    RegExp(r'((?:[\d]+\D){2}[\d]+)|([^\W_]+)').allMatches(text).forEach((RegExpMatch match) {
+    RegExp(r'((?:[\d]+\D){2}[\d]+)|([^\W_]+)').allMatches(text).forEach((Match match) {
       if (match.group(1) != null) {
         // Compact format matching ((?:[\d]+\D){2}[\d]+), like `MM/DD/YY`
         final numbers = RegExp(r'(\d+)')
             .allMatches(match.group(1))
-            .map((RegExpMatch numMatch) => numMatch.group(1))
+            .map((Match numMatch) => numMatch.group(1))
             .map(int.tryParse)
             .map((int n) => n ?? 1)
             .toList(growable: false);
