@@ -8,6 +8,5 @@ import 'package:best_effort_parser/name.dart';
 /// $ dart name_example.dart 'Jack Warren'
 /// [Given]: Jack [Family]: Warren
 /// ```
-void main(List<String> arguments) {
-  print(NameParser.basic().parse(arguments.join(' ')).diagnosticString());
-}
+void main(List<String> arguments) =>
+    print(NameParser.basic().parse(arguments.join(' ')).diagnosticString());
