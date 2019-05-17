@@ -6,7 +6,7 @@ import 'src/name/parsed_name.dart';
 ///
 /// The values given as parameters to this function will never be null. If a name does not have a
 /// given component, an empty string will be given to this function's corresponding parameter.
-typedef ParsedNameStorage<T> = T Function(String family,
+typedef NameParserOutput<T> = T Function(String family,
     {String given, String droppingParticle, String nonDroppingParticle, String suffix});
 
 /// A parser designed to extract a person's name from an arbitrary string. The [parse] method
@@ -72,11 +72,11 @@ class NameParser<T> {
       _whitespace = RegExp(r'\s+'),
       _commas = RegExp(r'\s*,+\s*');
 
-  /// Internal storage for the [ParsedNameStorage] function, to be used to return the output of
+  /// Internal storage for the [NameParserOutput] function, to be used to return the output of
   /// [parse].
-  ParsedNameStorage<T> _parsedNameStorage;
+  NameParserOutput<T> _nameParserOutput;
 
-  /// Constructor for [NameParser], requiring a [ParsedNameStorage] to return as output.
+  /// Constructor for [NameParser], requiring a [NameParserOutput] to return as output.
   ///
   /// Optional parameters are available to customize what the parsing detects as [suffixes],
   /// [particles], and [punctuation], respectively. Those optional parameters are [Pattern]s:
@@ -86,11 +86,11 @@ class NameParser<T> {
   ///
   /// Since the default values of the optional parameters are strings, they are converted to
   /// case-insensitive [RegExp] objects here.
-  NameParser(ParsedNameStorage<T> parsedNameStorage,
+  NameParser(NameParserOutput<T> nameParserOutput,
       {Pattern suffixes = defaultSuffixes,
         Pattern particles = defaultParticles,
         Pattern punctuation = defaultPunctuation}) {
-    _parsedNameStorage = parsedNameStorage;
+    _nameParserOutput = nameParserOutput;
     _suffixes = suffixes is String ? RegExp(suffixes, caseSensitive: false) : suffixes;
     _particles = particles is String ? RegExp(particles, caseSensitive: false) : particles;
     _punctuation = punctuation is String ? RegExp(punctuation, caseSensitive: false) : punctuation;
@@ -119,7 +119,7 @@ class NameParser<T> {
   T parse(String input) {
     if (input == null) input = '';
     if (input.isEmpty)
-      return _parsedNameStorage(input,
+      return _nameParserOutput(input,
           given: '', droppingParticle: '', nonDroppingParticle: '', suffix: '');
 
     // Separate out obvious suffixes in the name. They could be anywhere, but they will be in the
@@ -156,7 +156,7 @@ class NameParser<T> {
     } else if (nonSuffixParts.isEmpty)
       // This means we have some sort of empty input or that everything is suffixes... return
       // immediately with everything we have as the family name.
-      return _parsedNameStorage(input,
+      return _nameParserOutput(input,
           given: '', droppingParticle: '', nonDroppingParticle: '', suffix: '');
     else
       name = nonSuffixParts.first;
@@ -199,7 +199,7 @@ class NameParser<T> {
     }
 
     // Remaining space parts are all part of the given name; we have everything to return now.
-    return _parsedNameStorage(familyParts.join(' '),
+    return _nameParserOutput(familyParts.join(' '),
         given: spaceParts.join(' '),
         droppingParticle: droppingParticleParts.join(' '),
         nonDroppingParticle: nonDroppingParticleParts.join(' '),
