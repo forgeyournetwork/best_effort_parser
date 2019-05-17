@@ -150,6 +150,11 @@ main() {
       test('makes sure the month isn\'t above 12', () {
         expect(DateParser.basic().parse('18-5-20').first.month, equals(6));
       });
+
+      test('can output in custom formats', () {
+        DateParserOutput<int> customOutput = (int year, [int month, int day]) => year;
+        expect(DateParser(customOutput).parse('March 2004'), equals([2004]));
+      });
     });
   });
 
