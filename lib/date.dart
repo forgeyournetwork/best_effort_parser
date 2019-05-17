@@ -122,14 +122,17 @@ class DateParser<T> {
             .map(int.tryParse)
             .map((int n) => n ?? 1)
             .toList(growable: false);
-        if (numbers[0].toString().length < 4 &&
+        if (numbers[0].toString().length <= 2 &&
+            numbers[1].toString().length <= 2 &&
             numbers[2].toString().length >= 4 &&
             _compactDateFormat == CompactDateFormat.yearFirst) {
           // Found DD/MM/YYYY when format is YY/MM/DD
           dayParts.add(_toDay(numbers[0]));
           monthParts.add(_toMonth(numbers[1]));
           yearParts.add(_toYear(numbers[2]));
-        } else if (numbers[0].toString().length >= 4 ||
+        } else if ((numbers[0].toString().length >= 4 &&
+                numbers[1].toString().length <= 2 &&
+                numbers[2].toString().length <= 2) ||
             _compactDateFormat == CompactDateFormat.yearFirst) {
           // Found YYYY/MM/DD or format is YY/MM/DD
           yearParts.add(_toYear(numbers[0]));
