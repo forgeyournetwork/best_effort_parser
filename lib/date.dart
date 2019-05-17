@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:best_effort_parser/src/date/parsed_date.dart';
+import 'src/date/parsed_date.dart';
 
 typedef DateParserOutput<T> = T Function(int year, [int month, int day]);
 
