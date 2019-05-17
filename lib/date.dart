@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:best_effort_parser/src/date/parsed_date.dart';
 
-typedef ParsedDateStorage<T> = T Function(int year, [int month, int day]);
+typedef DateParserOutput<T> = T Function(int year, [int month, int day]);
 
 enum CompactDateFormat { dayFirst, monthFirst, yearFirst }
 
@@ -49,7 +49,7 @@ class DateParser<T> {
   SplayTreeMap<int, int> _fourDigitOffsets;
   Map<int, int> _seasonToMonth;
   CompactDateFormat _compactDateFormat;
-  ParsedDateStorage<T> _parsedDateStorage;
+  DateParserOutput<T> _dateParserOutput;
 
   /// Constructor for [DateParser], specifying the output format with the option to customize the
   /// behavior of [parse].
@@ -70,14 +70,14 @@ class DateParser<T> {
   /// - [fourDigitOffsets]: **nullable** mapping of how two/three digit years should be converted
   /// to four digits, defaults to `[0, 30)` being plus 2000 and `[30, 100) being plus 1900 (see
   /// [defaultFourDigitOffsets]). If null, no conversion will be done.
-  DateParser(ParsedDateStorage<T> parsedDateStorage,
+  DateParser(DateParserOutput<T> dateParserOutput,
       {CompactDateFormat compactDateFormat: CompactDateFormat.monthFirst,
       List<Pattern> months: defaultMonths,
       List<Pattern> seasons: defaultSeasons,
       Map<int, int> seasonToMonth: defaultSeasonToMonthApproximations,
       Pattern digitSuffixes: defaultDigitSuffixes,
       Map<int, int> fourDigitOffsets: defaultFourDigitOffsets}) {
-    _parsedDateStorage = parsedDateStorage;
+    _dateParserOutput = dateParserOutput;
     _compactDateFormat = compactDateFormat;
     _months = months.map(_toRegExp).toList();
     _seasons = (seasons != null ? seasons : <String>[]).map(_toRegExp).toList();
@@ -193,13 +193,13 @@ class DateParser<T> {
         yearCurrent = yearPartIterator.current ?? yearCurrent;
         if (yearCurrent != null && monthCurrent != null && dayCurrent != null)
           // If all three parts aren't null, supply all three
-          ret.add(_parsedDateStorage(yearCurrent, monthCurrent, dayCurrent));
+          ret.add(_dateParserOutput(yearCurrent, monthCurrent, dayCurrent));
         else if (yearCurrent != null && monthCurrent != null)
           // Otherwise, if year and month aren't null, supply those
-          ret.add(_parsedDateStorage(yearCurrent, monthCurrent));
+          ret.add(_dateParserOutput(yearCurrent, monthCurrent));
         else if (yearCurrent != null)
           // Otherwise, if year isn't null, supply that
-          ret.add(_parsedDateStorage(yearCurrent));
+          ret.add(_dateParserOutput(yearCurrent));
       }
     } while (moreDays || moreMonths || moreYears);
 
