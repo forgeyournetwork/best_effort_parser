@@ -1,3 +1,8 @@
+## 1.0.0
+
+- Documentation fixes
+- Exit beta
+
 ## 0.3.1
 
 - Standardize formatting and documentation
