@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Standardize formatting and documentation
+
 ## 0.3.0
 
 - Add date parsing
