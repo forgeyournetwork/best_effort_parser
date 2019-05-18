@@ -16,7 +16,7 @@ jobs:
       script: pub run test_coverage
       after_success: coveralls-lcov --repo-token $COVERALLS_TOKEN coverage/lcov.info
     - name: "formatting"
-      script: dartfmt -n --set-exit-if-changed .
+      script: dartfmt --dry-run --set-exit-if-changed .
     - name: "static analysis"
       script: dartanalyzer .
     - stage: deploy
