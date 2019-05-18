@@ -105,11 +105,11 @@ class NameParser<T> {
         : punctuation;
   }
 
-  /// Static basic constructor for [NameParser] that restricts the output of [parse] to be a
-  /// [ParsedName] object.
+  /// Behaves the same as the constructor for [NameParser] except that the output format is
+  /// specified to be [ParsedName].
   ///
-  /// Optional parameters may be provided; they behave precisely the same as the normal
-  /// constructor for [NameParser].
+  /// [ParsedName] is an immutable value class with accessors for the name parts and methods to
+  /// transform it into either a normal or diagnostic string.
   static NameParser<ParsedName> basic(
           {Pattern suffixes = defaultSuffixes,
           Pattern particles = defaultParticles,

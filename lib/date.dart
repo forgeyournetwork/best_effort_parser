@@ -193,6 +193,9 @@ class DateParser<T> {
 
   /// Behaves the same as the constructor for [DateParser] except that the output format is
   /// specified to be [ParsedDate].
+  ///
+  /// [ParsedDate] is an immutable value class with accessors for the year, month, and day and
+  /// methods to transform it into a diagnostic string or [DateTime] object.
   static DateParser<ParsedDate> basic(
           {CompactDateFormat compactDateFormat = CompactDateFormat.monthFirst,
           List<Pattern> months = defaultMonths,
