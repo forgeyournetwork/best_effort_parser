@@ -34,7 +34,6 @@ class DateParser<T> {
   static const Map<int, int> defaultFourDigitOffsets = {
     30: 2000, // For years less than 30, add 2000
     100: 1900, // For years at least 30 but less than 100, add 1900
-    1000: 0 // For years ad least 100 but less than 1000, add 0
   };
 
   static const Map<int, int> defaultSeasonToMonthApproximations = {
