@@ -70,8 +70,7 @@ main() {
         expect(result.suffix, isEmpty);
       });
 
-      test('handles particles properly with partial last, first ordering',
-          () {
+      test('handles particles properly with partial last, first ordering', () {
         var result = NameParser.basic().parse('La Fontaine, Jean de');
         expect(result.given, 'Jean');
         expect(result.family, 'Fontaine');
@@ -80,8 +79,7 @@ main() {
         expect(result.suffix, isEmpty);
       });
 
-      test('handles particles properly with partial last, first ordering',
-          () {
+      test('handles particles properly with partial last, first ordering', () {
         var result = NameParser.basic().parse('La Fontaine, Jean de');
         expect(result.given, 'Jean');
         expect(result.family, 'Fontaine');
@@ -101,8 +99,7 @@ main() {
         expect(result.suffix, isEmpty);
       });
 
-      test('handles particles properly with minimal last, first ordering',
-          () {
+      test('handles particles properly with minimal last, first ordering', () {
         var result = NameParser.basic().parse('Fontaine, Jean de La');
         expect(result.given, 'Jean');
         expect(result.family, 'Fontaine');
@@ -135,8 +132,7 @@ main() {
         expect(result.nonDroppingParticle, 'De');
       });
 
-      test('handles uppercase particles as non-dropping in last, first',
-          () {
+      test('handles uppercase particles as non-dropping in last, first', () {
         var result = NameParser.basic().parse('De Kooning, Willem');
         expect(result.given, 'Willem');
         expect(result.family, 'Kooning');
@@ -158,8 +154,7 @@ main() {
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes in last, first when the suffix follows last',
-          () {
+      test('handles suffixes in last, first when the suffix follows last', () {
         var result = NameParser.basic().parse('Mary II, Elizabeth Alexandra');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
@@ -175,8 +170,7 @@ main() {
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes in last, first when the suffix is at the end',
-          () {
+      test('handles suffixes in last, first when the suffix is at the end', () {
         var result = NameParser.basic().parse('Mary, Elizabeth Alexandra II');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
