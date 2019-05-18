@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Add date parsing
+
 ## 0.2.8
 
 - Make the deployment script executable
