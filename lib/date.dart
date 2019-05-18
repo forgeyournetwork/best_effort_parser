@@ -7,8 +7,8 @@ import 'src/date/parsed_date.dart';
 /// [DateParser]'s usage of this function is guaranteed to never pass null to any of the parameters.
 typedef DateParserOutput<T> = T Function(int year, [int month, int day]);
 
-/// Enumeration date formats understood by [DateParser], one of which may be set during
-/// construction to specify how ambiguous dates should be parsed.
+/// Enumeration of date formats understood by [DateParser], one of which may be
+/// set during construction to specify how ambiguous dates should be parsed.
 ///
 /// - [dayFirst]: assume day/month/year, but fall back to [yearFirst] if the year is obviously
 /// first (i.e. DDDD/MM/YY becomes YYYY/MM/DD).
