@@ -108,24 +108,24 @@ class NameParser<T> {
       NameParser<ParsedName>(ParsedName.constantConstructor,
           suffixes: suffixes, particles: particles, punctuation: punctuation);
 
-  /// Parse the [input] name into a [T] object, separating out the family name, given name, any
+  /// Parse the name in [text] into a [T] object, separating out the family name, given name, any
   /// particles (dropping and non-dropping), and suffixes.
   ///
-  /// If [input] is not empty, the family parameter of [T] (the first and only positional
+  /// If the [text] is not empty, the family parameter of [T] (the first and only positional
   /// parameter) is guaranteed to be non-empty.
   ///
   /// All parameters of [T] are guaranteed to be non-null (if nothing exists for that parameter,
   /// an empty string will be given).
-  T parse(String input) {
-    if (input == null) input = '';
-    if (input.isEmpty)
-      return _nameParserOutput(input,
+  T parse(String text) {
+    if (text == null) text = '';
+    if (text.isEmpty)
+      return _nameParserOutput(text,
           given: '', droppingParticle: '', nonDroppingParticle: '', suffix: '');
 
     // Separate out obvious suffixes in the name. They could be anywhere, but they will be in the
     // correct order with themselves. Splits parts internally based on whitespace so that a comma
     // part with multiple suffixes will still be properly detected.
-    List<String> commaParts = input.split(_commas);
+    List<String> commaParts = text.split(_commas);
     DoubleLinkedQueue<String> suffixParts = DoubleLinkedQueue();
     DoubleLinkedQueue<String> nonSuffixParts = DoubleLinkedQueue();
     for (var part in commaParts)
@@ -156,7 +156,7 @@ class NameParser<T> {
     } else if (nonSuffixParts.isEmpty)
       // This means we have some sort of empty input or that everything is suffixes... return
       // immediately with everything we have as the family name.
-      return _nameParserOutput(input,
+      return _nameParserOutput(text,
           given: '', droppingParticle: '', nonDroppingParticle: '', suffix: '');
     else
       name = nonSuffixParts.first;
