@@ -7,7 +7,10 @@ import 'src/name/parsed_name.dart';
 /// The values given as parameters to this function will never be null. If a name does not have a
 /// given component, an empty string will be given to this function's corresponding parameter.
 typedef NameParserOutput<T> = T Function(String family,
-    {String given, String droppingParticle, String nonDroppingParticle, String suffix});
+    {String given,
+    String droppingParticle,
+    String nonDroppingParticle,
+    String suffix});
 
 /// A parser designed to extract a person's name from an arbitrary string. The [parse] method
 /// will create a [T] object with the person's family name, given name, particles (dropping and
@@ -48,7 +51,8 @@ class NameParser<T> {
   /// - `jr`, `sr`
   /// - Roman numerals `i` - `xiii`
   /// - `esq`, `cpa`, `dc`, `dds`, `vm`, `jd`, `md`, `phd`
-  static const String defaultSuffixes = r'^([js]r|[vx]?i{0,3}|i[vx]|esq|cpa|dc|dds|vm|[jm]d|phd)$';
+  static const String defaultSuffixes =
+      r'^([js]r|[vx]?i{0,3}|i[vx]|esq|cpa|dc|dds|vm|[jm]d|phd)$';
 
   /// A [RegExp] pattern matching a variety of name particles.
   ///
@@ -91,9 +95,14 @@ class NameParser<T> {
       Pattern particles = defaultParticles,
       Pattern punctuation = defaultPunctuation}) {
     _nameParserOutput = nameParserOutput;
-    _suffixes = suffixes is String ? RegExp(suffixes, caseSensitive: false) : suffixes;
-    _particles = particles is String ? RegExp(particles, caseSensitive: false) : particles;
-    _punctuation = punctuation is String ? RegExp(punctuation, caseSensitive: false) : punctuation;
+    _suffixes =
+        suffixes is String ? RegExp(suffixes, caseSensitive: false) : suffixes;
+    _particles = particles is String
+        ? RegExp(particles, caseSensitive: false)
+        : particles;
+    _punctuation = punctuation is String
+        ? RegExp(punctuation, caseSensitive: false)
+        : punctuation;
   }
 
   /// Static basic constructor for [NameParser] that restricts the output of [parse] to be a
@@ -153,7 +162,8 @@ class NameParser<T> {
           .replaceAll(_punctuation, '')
           .contains(_suffixes)) {
         List<String> lastParts = nonSuffixParts.removeLast().split(_whitespace);
-        while (lastParts.last.replaceAll(_punctuation, '').contains(_suffixes)) {
+        while (
+            lastParts.last.replaceAll(_punctuation, '').contains(_suffixes)) {
           suffixParts.addFirst(lastParts.removeLast());
         }
         nonSuffixParts.add(lastParts.join(' '));
@@ -199,7 +209,8 @@ class NameParser<T> {
     // dropping.
     DoubleLinkedQueue<String> nonDroppingParticleParts = DoubleLinkedQueue();
     DoubleLinkedQueue<String> droppingParticleParts = DoubleLinkedQueue();
-    while (spaceParts.isNotEmpty && spacePartsNoPunctuation.last.contains(_particles)) {
+    while (spaceParts.isNotEmpty &&
+        spacePartsNoPunctuation.last.contains(_particles)) {
       var particle = spacePartsNoPunctuation.removeLast();
       if (particle.toLowerCase() != particle) {
         nonDroppingParticleParts.addFirst(spaceParts.removeLast());

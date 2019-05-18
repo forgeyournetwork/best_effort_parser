@@ -44,7 +44,9 @@ main() {
         expect(result.family, 'Warren');
       });
 
-      test('rotates the first comma-separated portion to the end to handle <last>, <first>', () {
+      test(
+          'rotates the first comma-separated portion to the end to handle <last>, <first>',
+          () {
         var result = NameParser.basic().parse('Warren, Jack Ramsey');
         expect(result.given, 'Jack Ramsey');
         expect(result.family, 'Warren');
@@ -68,7 +70,8 @@ main() {
         expect(result.suffix, isEmpty);
       });
 
-      test('handles particles properly with partial <last>, <first> ordering', () {
+      test('handles particles properly with partial <last>, <first> ordering',
+          () {
         var result = NameParser.basic().parse('La Fontaine, Jean de');
         expect(result.given, 'Jean');
         expect(result.family, 'Fontaine');
@@ -77,7 +80,8 @@ main() {
         expect(result.suffix, isEmpty);
       });
 
-      test('handles particles properly with partial <last>, <first> ordering', () {
+      test('handles particles properly with partial <last>, <first> ordering',
+          () {
         var result = NameParser.basic().parse('La Fontaine, Jean de');
         expect(result.given, 'Jean');
         expect(result.family, 'Fontaine');
@@ -86,7 +90,8 @@ main() {
         expect(result.suffix, isEmpty);
       });
 
-      test('handles particles properly with partial <last>, <first> ordering with an odd comma',
+      test(
+          'handles particles properly with partial <last>, <first> ordering with an odd comma',
           () {
         var result = NameParser.basic().parse('La Fontaine, Jean, de');
         expect(result.given, 'Jean');
@@ -96,7 +101,8 @@ main() {
         expect(result.suffix, isEmpty);
       });
 
-      test('handles particles properly with minimal <last>, <first> ordering', () {
+      test('handles particles properly with minimal <last>, <first> ordering',
+          () {
         var result = NameParser.basic().parse('Fontaine, Jean de La');
         expect(result.given, 'Jean');
         expect(result.family, 'Fontaine');
@@ -129,7 +135,8 @@ main() {
         expect(result.nonDroppingParticle, 'De');
       });
 
-      test('handles uppercase particles as non-dropping in <last>, <first>', () {
+      test('handles uppercase particles as non-dropping in <last>, <first>',
+          () {
         var result = NameParser.basic().parse('De Kooning, Willem');
         expect(result.given, 'Willem');
         expect(result.family, 'Kooning');
@@ -151,35 +158,43 @@ main() {
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes in <last>, <first> when the suffix follows last', () {
+      test('handles suffixes in <last>, <first> when the suffix follows last',
+          () {
         var result = NameParser.basic().parse('Mary II, Elizabeth Alexandra');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes in <last>, <first> when the suffix follows last with a comma', () {
+      test(
+          'handles suffixes in <last>, <first> when the suffix follows last with a comma',
+          () {
         var result = NameParser.basic().parse('Mary, II, Elizabeth Alexandra');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes in <last>, <first> when the suffix is at the end', () {
+      test('handles suffixes in <last>, <first> when the suffix is at the end',
+          () {
         var result = NameParser.basic().parse('Mary, Elizabeth Alexandra II');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
         expect(result.suffix, 'II');
       });
 
-      test('handles suffixes in <last>, <first> when the suffix is at the end with a comma', () {
+      test(
+          'handles suffixes in <last>, <first> when the suffix is at the end with a comma',
+          () {
         var result = NameParser.basic().parse('Mary, Elizabeth Alexandra, II');
         expect(result.given, 'Elizabeth Alexandra');
         expect(result.family, 'Mary');
         expect(result.suffix, 'II');
       });
 
-      test('handles all-caps names as expected, with particles being non-dropping', () {
+      test(
+          'handles all-caps names as expected, with particles being non-dropping',
+          () {
         var result = NameParser.basic().parse('WILLEM DE KOONING');
         expect(result.given, 'WILLEM');
         expect(result.family, 'KOONING');
@@ -253,8 +268,8 @@ main() {
 
     group('diagonisticString()', () {
       test('fills its default parameters', () {
-        var result =
-            NameParser.basic().parse('given1 given2 de van Di La family1 family2 Jr. III PhD.');
+        var result = NameParser.basic()
+            .parse('given1 given2 de van Di La family1 family2 Jr. III PhD.');
         expect(
             result.diagnosticString(),
             '[Given]: given1 given2 [Dropping Particle]: de van [Non-dropping Particle]: Di La '
@@ -262,8 +277,8 @@ main() {
       });
 
       test('can have customized labels/separators', () {
-        var result =
-            NameParser.basic().parse('given1 given2 de van Di La family1 family2 Jr. III PhD.');
+        var result = NameParser.basic()
+            .parse('given1 given2 de van Di La family1 family2 Jr. III PhD.');
         expect(
             result.diagnosticString(
                 separator: '-',

@@ -32,7 +32,10 @@ class ParsedDate {
   /// Evaluate if the [other] object is the same as this, by type and field equality.
   @override
   bool operator ==(other) =>
-      other is ParsedDate && year == other.year && month == other.month && day == other.day;
+      other is ParsedDate &&
+      year == other.year &&
+      month == other.month &&
+      day == other.day;
 
   /// Alias [toString] to [diagnosticString], forcing default parameters.
   @override

@@ -20,7 +20,10 @@ class ParsedName {
   /// Constructor for [ParsedName], where any null parameters will have the empty string used in
   /// their place.
   ParsedName(String family,
-      {String given, String droppingParticle, String nonDroppingParticle, String suffix}) {
+      {String given,
+      String droppingParticle,
+      String nonDroppingParticle,
+      String suffix}) {
     _family = family ?? '';
     _given = given ?? '';
     _droppingParticle = droppingParticle ?? '';
@@ -31,7 +34,10 @@ class ParsedName {
   /// Static method constructor for [ParsedName] so that this class can be constructed via
   /// reference.
   static ParsedName constantConstructor(String family,
-          {String given, String droppingParticle, String nonDroppingParticle, String suffix}) =>
+          {String given,
+          String droppingParticle,
+          String nonDroppingParticle,
+          String suffix}) =>
       ParsedName(family,
           given: given,
           droppingParticle: droppingParticle,
@@ -76,9 +82,11 @@ class ParsedName {
       [
         if (given.isNotEmpty && givenLabel.isNotEmpty) givenLabel,
         if (given.isNotEmpty) given,
-        if (droppingParticle.isNotEmpty && droppingParticleLabel.isNotEmpty) droppingParticleLabel,
+        if (droppingParticle.isNotEmpty && droppingParticleLabel.isNotEmpty)
+          droppingParticleLabel,
         if (droppingParticle.isNotEmpty) droppingParticle,
-        if (nonDroppingParticle.isNotEmpty && nonDroppingParticleLabel.isNotEmpty)
+        if (nonDroppingParticle.isNotEmpty &&
+            nonDroppingParticleLabel.isNotEmpty)
           nonDroppingParticleLabel,
         if (nonDroppingParticle.isNotEmpty) nonDroppingParticle,
         if (family.isNotEmpty && familyLabel.isNotEmpty) familyLabel,

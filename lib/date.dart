@@ -222,7 +222,9 @@ class DateParser<T> {
     final List<int> dayParts = [], monthParts = [], yearParts = [];
 
     // collect parts
-    RegExp(r'((?:[\d]+\D){2}[\d]+)|([^\W_]+)').allMatches(text).forEach((Match match) {
+    RegExp(r'((?:[\d]+\D){2}[\d]+)|([^\W_]+)')
+        .allMatches(text)
+        .forEach((Match match) {
       if (match.group(1) != null) {
         // Compact format matching ((?:[\d]+\D){2}[\d]+), like `MM/DD/YY`
         final numbers = RegExp(r'(\d+)')
@@ -271,7 +273,8 @@ class DateParser<T> {
         if (_seasons.isNotEmpty && _seasonToMonth != null) {
           for (int s = 0; s < _seasons.length; s++) {
             if (part.contains(_seasons[s])) {
-              monthParts.add(_seasonToMonth[s + 1] ?? defaultSeasonToMonthApproximations[s + 1]);
+              monthParts.add(_seasonToMonth[s + 1] ??
+                  defaultSeasonToMonthApproximations[s + 1]);
             }
           }
         }
@@ -323,7 +326,8 @@ class DateParser<T> {
 
   /// Turn [year] into a four digit number if necessary and possible.
   int _toYear(int year) {
-    if (year.toString().length < 4 && _fourDigitOffsets.firstKeyAfter(year) != null) {
+    if (year.toString().length < 4 &&
+        _fourDigitOffsets.firstKeyAfter(year) != null) {
       return year + _fourDigitOffsets[_fourDigitOffsets.firstKeyAfter(year)];
     } else {
       return year;

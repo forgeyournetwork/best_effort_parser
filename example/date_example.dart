@@ -8,4 +8,5 @@ import 'package:best_effort_parser/date.dart';
 /// $ dart date_example.dart 'January 1st, 2019'
 /// [Day]: 1 [Month]: 1 [Year]: 2019
 /// ```
-void main(List<String> arguments) => DateParser.basic().parse(arguments.join(' ')).forEach(print);
+void main(List<String> arguments) =>
+    DateParser.basic().parse(arguments.join(' ')).forEach(print);
