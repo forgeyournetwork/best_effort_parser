@@ -27,7 +27,7 @@ typedef NameParserOutput<T> = T Function(String family,
 /// non-dropping (the "La" in "Jean de La Fontaine")
 /// - *suffix*: abbreviations after a person's last name (the "III" in "Bill Gates III")
 ///
-/// Names may be in a wide variety of formats. Beyond "<first> <last>" and "<last>, <first>"
+/// Names may be in a wide variety of formats. Beyond "first last" and "last, first"
 /// formats, [parse] will detect particles and suffixes in any reasonably-correct position,
 /// handling comma-separation ("Gates, Bill, III"), split particles ("La Fontaine, Jean de"), and
 /// other edge cases.
@@ -149,13 +149,13 @@ class NameParser<T> {
       }
     }
 
-    // If we still have multiple comma-separated parts, assume it is a "<last>, <first>"-type
+    // If we still have multiple comma-separated parts, assume it is a "last, first"-type
     // scenario. Make the first element the last element and join everything with spaces so we
-    // get something roughly matching "<first> <last>".
+    // get something roughly matching "first last".
     String name;
     if (nonSuffixParts.length > 1) {
-      // If the last part ends in a suffix, we have "<last>, <first> <suffixes>", so strip
-      // suffixes off of the end before rotating <last> around.
+      // If the last part ends in a suffix, we have "last, first suffixes", so strip
+      // suffixes off of the end before rotating last around.
       if (nonSuffixParts.last
           .split(_whitespace)
           .last

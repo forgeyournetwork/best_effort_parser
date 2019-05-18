@@ -46,7 +46,7 @@ class ParsedName {
 
   /// Join all non-empty fields with a [separator] (defaults to a space).
   ///
-  /// The order of the fields is "<first> <last>". Specifically:
+  /// The order of the fields is "first last". Specifically:
   /// 1. [given]
   /// 2. [droppingParticle]
   /// 3. [nonDroppingParticle]
