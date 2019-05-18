@@ -2,11 +2,70 @@ import 'dart:collection';
 
 import 'src/date/parsed_date.dart';
 
+/// Type of function used to produce output from [DateParser]'s [parse] method.
+///
+/// [DateParser]'s usage of this function is guaranteed to never pass null to any of the parameters.
 typedef DateParserOutput<T> = T Function(int year, [int month, int day]);
 
+/// Enumeration date formats understood by [DateParser], one of which may be set during
+/// construction to specify how ambiguous dates should be parsed.
+///
+/// - [dayFirst]: assume day/month/year, but fall back to [yearFirst] if the year is obviously
+/// first (i.e. DDDD/MM/YY becomes YYYY/MM/DD).
+/// - [monthFirst]: assume month/day/year, but fall back to [yearFirst] if the year is obviously
+/// first (i.e. MMMM/DD/YY becomes YYYY/MM/DD).
+/// - [yearFirst]: assume year/month/day, but fall back to [dayFirst] if the year is obviously
+/// last (i.e. YY/MM/DDDD becomes DD/MM/YYYY).
 enum CompactDateFormat { dayFirst, monthFirst, yearFirst }
 
+/// A parser designed to extract dates from an arbitrary string. The [parse] method will create a
+/// list of [T] objects containing each date found.
+///
+/// Customization may be done during construction to target specific locales: detection of
+/// written-out months and seasons, stripping of ordinal suffixes, two-to-four-digit year
+/// conversions, season-to-month approximations, and of course compact date formats may all be
+/// tweaked. Those constructor parameters are optional; the defaults are suitable for en-US.
+///
+/// Parsing takes place in two stages, **collection** and **assembly**.
+///
+/// **Collection** parses the string into a list of days, months, and years. These lists need not
+/// be the same length and they may even be empty at the end of parsing; that is handled by the
+/// assembly stage.
+///
+/// For example, with the [basic] settings, "1/5/10" would contribute 1 as a month, 5 as a day,
+/// and 2010 as a year. "January" would contribute 1 as a month, "20" or "20th" would both
+/// contribute 20 as a day, and "2010-2015" would contribute 2010 and 2015 as years. Because
+/// [basic] settings include season-to-month translation, "spring" would contribute 3 as a month.
+///
+/// **Assembly** turns those days, months, and years into [T] objects. Each list is iterated over
+/// in tandem: if any list has more terms, an iteration occurs and a [T] is made from the most
+/// recent values from each list. If a list was always empty, the most recent value from that list
+/// will always be null, so the [T] will be truncated if possible.
+///
+/// For example, "March 2nd, 2000" has a single [T] created, but "March 2nd, 2000 to July 1st,
+/// 2001" would have two [T] created. "March 2nd, 2000 to 2005" would have two [T] created: one
+/// representing 2 March 2000 and the other being 2 March 2005 (when the second iteration occurs,
+/// the most recent day and month are still the ones from the previous iteration, so they are
+/// used again). An example of the truncation described above is "January - March 2010", which
+/// creates two [T] objects, neither having a day set. Truncation only occurs of less significant
+/// terms, so "5-10 Sep" would result in no [T] objects since no year was present.
 class DateParser<T> {
+  /// Default comprehension of seasons, for American English.
+  ///
+  /// If customized, the length of this default's replacement should generally match the size of
+  /// [defaultSeasonToMonthApproximations] (or its replacement). [parse]'s relevant behavior is as
+  /// follows (replacements provided during construction will be substituted automatically):
+  ///
+  /// 1. When evaluating a part of a string ("foo" in "foo-bar" or "spring" in "spring 2020"), it
+  /// will be checked against [RegExp]s created from the strings in this list.
+  /// 2. If the part matches, the *1-index* of the string from this list will be used as a key to
+  /// lookup in [defaultSeasonToMonthApproximations].
+  /// 3. The value for that key in [defaultSeasonToMonthApproximations] will be added as a month.
+  ///
+  /// For example, with the defaults, "spring" matches only the first string in
+  /// [defaultSeasons], so its 1-index of `1` will be used as a key to look in
+  /// [defaultSeasonToMonthApproximations]. `1`'s value is `3` (since spring begins in March), so
+  /// 3 will be recorded as the month.
   static const List<String> defaultSeasons = [
     r'spring',
     r'summer',
@@ -14,6 +73,17 @@ class DateParser<T> {
     r'winter',
   ];
 
+  /// Default comprehension of months, for American English.
+  ///
+  /// [parse]'s relevant behavior is as follows (replacements provided during construction will
+  /// be substituted automatically):
+  ///
+  /// 1. When evaluating a part of a string ("foo" in "foo-bar" or "july" in "2 july 2020"), it
+  /// will be checked against [RegExp]s created from the strings in this list.
+  /// 2. If the part matches, the *1-index* of the string from this list will be added as a month.
+  ///
+  /// For example, with the defaults "September" matches the ninth string in [defaultMonths], so
+  /// its 1-index of 9 will be recorded as the month.
   static const List<String> defaultMonths = [
     r'jan',
     r'feb',
@@ -29,13 +99,45 @@ class DateParser<T> {
     r'dec'
   ];
 
+  /// Default ordinal suffixes to strip from numbers before parsing, for American English.
+  ///
+  /// [parse]'s relevant behavior is as follows (replacements provided during construction will
+  /// be substituted automatically):
+  ///
+  /// 1. When evaluating a part of a string ("foo" in "foo-bar" or "2nd" in "July 2nd 2020"), it
+  /// will have all matches of a [RegExp] created from this string removed.
+  /// 2. The part is then attempted to be parsed to an integer. If unsuccessful, the below step
+  /// is skipped.
+  /// 3. If the integer has less than four digits, it is stored as a day. If the integer has at
+  /// least four digits, it is stored as a year.
+  ///
+  /// For example, with the defaults "2nd" has "nd" stripped, becoming "2". That is parsed to an
+  /// integer, and having only one digit it is stored as a day.
   static const String defaultDigitSuffixes = r'st|nd|rd|th';
 
+  /// Default offsets to apply to years under a certain threshold, where years in the range `[0,
+  /// 30)` have 2000 added to them while years in the range `[30, 100)` have 1900 added to them.
+  ///
+  /// [parse]'s relevant behavior is as follows (replacements provided during construction will
+  /// be substituted automatically:
+  ///
+  /// 1. When adding a year from a compact format ("1920/5/6" or "3/2/10"), if the year is less
+  /// than four digits (and no fall-back behavior from [CompactDateFormat] was executed) and a
+  /// non-null key exists after the year in this mapping, add its value to the year before
+  /// storing it.
+  ///
+  /// For example, with the defaults "1/2/3"'s year of "3" is less than 30 and so has 2000 added
+  /// to it, resulting in 2003 being recorded as the year.
   static const Map<int, int> defaultFourDigitOffsets = {
     30: 2000, // For years less than 30, add 2000
     100: 1900, // For years at least 30 but less than 100, add 1900
   };
 
+  /// Default mapping of seasons (given by their 1-indexed order) to the value to be recorded as
+  /// the month, where seasons are mapped to the month in which they begin.
+  ///
+  /// Customization and [parse]'s relevant behavior are discussed in the documentation for
+  /// [defaultSeasons].
   static const Map<int, int> defaultSeasonToMonthApproximations = {
     1: 3, // Spring starts in March
     2: 6, // Summer starts in June
@@ -69,6 +171,10 @@ class DateParser<T> {
   /// - [fourDigitOffsets]: **nullable** mapping of how two/three digit years should be converted
   /// to four digits, defaults to `[0, 30)` being plus 2000 and `[30, 100) being plus 1900 (see
   /// [defaultFourDigitOffsets]). If null, no conversion will be done.
+  ///
+  /// [Pattern]s accepted as input to this function will be made to all be [RegExp]s: [Pattern]'s
+  /// implementations are [String] and [RegExp], so any [String]s will be passed to the [RegExp]
+  /// constructor and any [RegExp]s will be left as is.
   DateParser(DateParserOutput<T> dateParserOutput,
       {CompactDateFormat compactDateFormat: CompactDateFormat.monthFirst,
       List<Pattern> months: defaultMonths,
@@ -107,6 +213,10 @@ class DateParser<T> {
   static RegExp _toRegExp(Pattern p) =>
       p is RegExp ? p : RegExp(p.toString(), caseSensitive: false);
 
+  /// [parse] the given [text] into a list of [T] objects, one for each date found.
+  ///
+  /// If the [text] is empty, null, or doesn't contain a parsable date, the output list will be
+  /// empty. This function will never return null.
   List<T> parse(String text) {
     if (text == null) return <T>[];
     final List<int> dayParts = [], monthParts = [], yearParts = [];
