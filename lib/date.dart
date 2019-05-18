@@ -176,12 +176,12 @@ class DateParser<T> {
   /// implementations are [String] and [RegExp], so any [String]s will be passed to the [RegExp]
   /// constructor and any [RegExp]s will be left as is.
   DateParser(DateParserOutput<T> dateParserOutput,
-      {CompactDateFormat compactDateFormat: CompactDateFormat.monthFirst,
-      List<Pattern> months: defaultMonths,
-      List<Pattern> seasons: defaultSeasons,
-      Map<int, int> seasonToMonth: defaultSeasonToMonthApproximations,
-      Pattern digitSuffixes: defaultDigitSuffixes,
-      Map<int, int> fourDigitOffsets: defaultFourDigitOffsets}) {
+      {CompactDateFormat compactDateFormat = CompactDateFormat.monthFirst,
+      List<Pattern> months = defaultMonths,
+      List<Pattern> seasons = defaultSeasons,
+      Map<int, int> seasonToMonth = defaultSeasonToMonthApproximations,
+      Pattern digitSuffixes = defaultDigitSuffixes,
+      Map<int, int> fourDigitOffsets = defaultFourDigitOffsets}) {
     _dateParserOutput = dateParserOutput;
     _compactDateFormat = compactDateFormat;
     _months = months.map(_toRegExp).toList();
@@ -194,12 +194,12 @@ class DateParser<T> {
   /// Behaves the same as the constructor for [DateParser] except that the output format is
   /// specified to be [ParsedDate].
   static DateParser<ParsedDate> basic(
-          {CompactDateFormat compactDateFormat: CompactDateFormat.monthFirst,
-          List<Pattern> months: defaultMonths,
-          List<Pattern> seasons: defaultSeasons,
-          Map<int, int> seasonToMonth: defaultSeasonToMonthApproximations,
-          Pattern digitSuffixes: defaultDigitSuffixes,
-          Map<int, int> fourDigitOffsets: defaultFourDigitOffsets}) =>
+          {CompactDateFormat compactDateFormat = CompactDateFormat.monthFirst,
+          List<Pattern> months = defaultMonths,
+          List<Pattern> seasons = defaultSeasons,
+          Map<int, int> seasonToMonth = defaultSeasonToMonthApproximations,
+          Pattern digitSuffixes = defaultDigitSuffixes,
+          Map<int, int> fourDigitOffsets = defaultFourDigitOffsets}) =>
       DateParser(ParsedDate.constantConstructor,
           compactDateFormat: compactDateFormat,
           months: months,
@@ -263,23 +263,28 @@ class DateParser<T> {
         String part = match.group(2);
 
         // Add any month matches
-        for (int m = 0; m < _months.length; m++)
+        for (int m = 0; m < _months.length; m++) {
           if (part.contains(_months[m])) monthParts.add(m + 1);
+        }
 
         // Add any season matches as month matches if allowed to
-        if (_seasons.isNotEmpty && _seasonToMonth != null)
-          for (int s = 0; s < _seasons.length; s++)
-            if (part.contains(_seasons[s]))
+        if (_seasons.isNotEmpty && _seasonToMonth != null) {
+          for (int s = 0; s < _seasons.length; s++) {
+            if (part.contains(_seasons[s])) {
               monthParts.add(_seasonToMonth[s + 1] ?? defaultSeasonToMonthApproximations[s + 1]);
+            }
+          }
+        }
 
         // Try to create a number from the part, use it as a day if it is at most two digits,
         // year otherwise
         int asNumber = int.tryParse(part.replaceAll(_digitSuffixes, ''));
         if (asNumber != null) {
-          if (asNumber.toString().length <= 2)
+          if (asNumber.toString().length <= 2) {
             dayParts.add(_toDay(asNumber));
-          else
+          } else {
             yearParts.add(_toYear(asNumber));
+          }
         }
       }
     });
@@ -300,15 +305,16 @@ class DateParser<T> {
         dayCurrent = dayPartIterator.current ?? dayCurrent;
         monthCurrent = monthPartIterator.current ?? monthCurrent;
         yearCurrent = yearPartIterator.current ?? yearCurrent;
-        if (yearCurrent != null && monthCurrent != null && dayCurrent != null)
+        if (yearCurrent != null && monthCurrent != null && dayCurrent != null) {
           // If all three parts aren't null, supply all three
           ret.add(_dateParserOutput(yearCurrent, monthCurrent, dayCurrent));
-        else if (yearCurrent != null && monthCurrent != null)
+        } else if (yearCurrent != null && monthCurrent != null) {
           // Otherwise, if year and month aren't null, supply those
           ret.add(_dateParserOutput(yearCurrent, monthCurrent));
-        else if (yearCurrent != null)
+        } else if (yearCurrent != null) {
           // Otherwise, if year isn't null, supply that
           ret.add(_dateParserOutput(yearCurrent));
+        }
       }
     } while (moreDays || moreMonths || moreYears);
 
@@ -317,10 +323,11 @@ class DateParser<T> {
 
   /// Turn [year] into a four digit number if necessary and possible.
   int _toYear(int year) {
-    if (year.toString().length < 4 && _fourDigitOffsets.firstKeyAfter(year) != null)
+    if (year.toString().length < 4 && _fourDigitOffsets.firstKeyAfter(year) != null) {
       return year + _fourDigitOffsets[_fourDigitOffsets.firstKeyAfter(year)];
-    else
+    } else {
       return year;
+    }
   }
 
   /// Ensure that [month] is no greater than 12.

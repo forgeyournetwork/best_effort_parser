@@ -219,6 +219,7 @@ main() {
   group('ParsedName', () {
     group('operator ==', () {
       test('returns false on different types', () {
+        // ignore: unrelated_type_equality_checks
         expect(ParsedName('foo') == 5, isFalse);
       });
 
@@ -230,8 +231,11 @@ main() {
           ParsedName('', nonDroppingParticle: 'abc'),
           ParsedName('', suffix: 'abc')
         ];
-        for (int a = 0; a < 5; a++)
-          for (int b = 0; b < 5; b++) expect(samples[a] == samples[b], a == b);
+        for (int a = 0; a < 5; a++) {
+          for (int b = 0; b < 5; b++) {
+            expect(samples[a] == samples[b], a == b);
+          }
+        }
       });
     });
 

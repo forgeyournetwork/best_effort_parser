@@ -161,6 +161,7 @@ main() {
   group('ParsedDate', () {
     group('operator ==', () {
       test('returns false if given a different type', () {
+        // ignore: unrelated_type_equality_checks
         expect(ParsedDate(2000) == 5, false);
       });
 
@@ -173,8 +174,11 @@ main() {
           ParsedDate(2000, 10, 10),
           ParsedDate(2000, 10, 5)
         ];
-        for (int a = 0; a < samples.length; a++)
-          for (int b = 0; b < samples.length; b++) expect(samples[a] == samples[b], a == b);
+        for (int a = 0; a < samples.length; a++) {
+          for (int b = 0; b < samples.length; b++) {
+            expect(samples[a] == samples[b], a == b);
+          }
+        }
       });
     });
 
