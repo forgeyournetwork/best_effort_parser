@@ -16,7 +16,7 @@ Provides parsing of names by categorizing different parts:
 - **non-dropping particle**: particles(s) before the person's last name that are *not* ignored if only the last name is shown
 - **suffix**: abbreviations after a person's last name
 
-Features handling of a wide range of formats: beyond just "\first \last" and "\last, \first", particles and suffixes are parsed from any reasonably correct position a user may place them.
+Features handling of a wide range of formats: beyond just "first last" and "last, first", particles and suffixes are parsed from any reasonably correct position a user may place them.
 
 ### Example:
 #### `name_example.dart`
