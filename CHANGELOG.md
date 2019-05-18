@@ -1,7 +1,7 @@
 ## 1.0.0
 
 - Documentation fixes
-- Exit beta
+- Fix version constraint; require dart 2.3
 
 ## 0.3.1
 
