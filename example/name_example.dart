@@ -4,8 +4,8 @@ import 'package:best_effort_parser/name.dart';
 /// concatenated with spaces and then run through the parser with default settings.
 ///
 /// Example usage:
-/// ```bash
-/// $ dart name_example.dart 'Jack Warren'
+/// ```text
+/// λ  dart name_example.dart 'Jack Warren'
 /// [Given]: Jack [Family]: Warren
 /// ```
 void main(List<String> arguments) =>

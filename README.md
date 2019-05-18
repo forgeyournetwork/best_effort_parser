@@ -30,16 +30,16 @@ void main(List<String> arguments) =>
 
 Demo:
 ```text
-λ  dart .\name_example.dart 'Jack Warren'
+λ  dart name_example.dart 'Jack Warren'
 [Given]: Jack [Family]: Warren
 
-λ  dart .\name_example.dart 'La Fontaine, Jean de'
+λ  dart name_example.dart 'La Fontaine, Jean de'
 [Given]: Jean [Dropping Particle]: de [Non-dropping Particle]: La [Family]: Fontaine
 
-λ  dart .\name_example.dart 'Gates, Bill III'
+λ  dart name_example.dart 'Gates, Bill III'
 [Given]: Bill [Family]: Gates [Suffix]: III
 
-λ  dart .\name_example.dart 'Willem de Kooning'
+λ  dart name_example.dart 'Willem de Kooning'
 [Given]: Willem [Dropping Particle]: de [Family]: Kooning
 ```
 
@@ -62,21 +62,21 @@ void main(List<String> arguments) =>
 
 Demo:
 ```text
-λ  dart .\date_example.dart 'January 1st, 2019'
+λ  dart date_example.dart 'January 1st, 2019'
 [Day]: 1 [Month]: 1 [Year]: 2019
 
-λ  dart .\date_example.dart '1/2/3'
+λ  dart date_example.dart '1/2/3'
 [Day]: 2 [Month]: 1 [Year]: 2003
 
-λ  dart .\date_example.dart '10/10/90 - 3/13/18'
+λ  dart date_example.dart '10/10/90 - 3/13/18'
 [Day]: 10 [Month]: 10 [Year]: 1990
 [Day]: 13 [Month]: 3 [Year]: 2018
 
-λ  dart .\date_example.dart 'Spring-Summer 2010'
+λ  dart date_example.dart 'Spring-Summer 2010'
 [Month]: 3 [Year]: 2010
 [Month]: 6 [Year]: 2010
 
-λ  dart .\date_example.dart '1999-15-6'
+λ  dart date_example.dart '1999-15-6'
 [Day]: 6 [Month]: 3 [Year]: 1999
 ```
 
