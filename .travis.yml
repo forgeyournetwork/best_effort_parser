@@ -15,7 +15,7 @@ jobs:
       script: dartfmt --dry-run --set-exit-if-changed .
     - name: "static analysis"
       script: dartanalyzer .
-    - stage coverage
+    - stage: coverage
       name: "coverage"
       before_script: gem install coveralls-lcov
       script: pub run test_coverage
