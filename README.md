@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.com/jack-r-warren/best_effort_parser.svg?branch=master)](https://travis-ci.com/jack-r-warren/best_effort_parser) [![Coverage Status](https://coveralls.io/repos/github/jack-r-warren/best_effort_parser/badge.svg?branch=master)](https://coveralls.io/github/jack-r-warren/best_effort_parser?branch=master) [![Pub](https://img.shields.io/pub/v/best_effort_parser.svg)](https://pub.dartlang.org/packages/best_effort_parser)
 
-Provides assistance with parsing arbitrary, unstructured user input into output types of your choice.
+Parse unstructured user input, with customizable behavior and output types. Parsing is currently available for [names](#name-parsing) and [dates](#date-parsing).
 
 ## Name Parsing
 #### `best_effort_parser/name.dart`
