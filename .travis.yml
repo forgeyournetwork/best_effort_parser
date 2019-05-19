@@ -1,7 +1,6 @@
 language: dart
 dart:
   - stable
-script: pub get
 stages:
   - test
   - coverage
