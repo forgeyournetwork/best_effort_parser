@@ -1,3 +1,7 @@
+## 1.0.2
+
+- Update `README.md` title (package name already at the top of the page on pub)
+
 ## 1.0.1
 
 - Fix `README.md` typo

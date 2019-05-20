@@ -1,6 +1,6 @@
 name: best_effort_parser
 description: Parse unstructured user input of names and dates, with customizable behavior and output types.
-version: 1.0.1
+version: 1.0.2
 homepage: https://github.com/jack-r-warren/best_effort_parser
 author: Jack Warren <jack@jackwarren.info>
 
