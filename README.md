@@ -1,4 +1,4 @@
-# best_effort_parser
+# Best Effort Parser
 
 > Author: [Jack Warren][author site]
 
