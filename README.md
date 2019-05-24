@@ -29,7 +29,7 @@ void main(List<String> arguments) =>
 ```
 
 Demo:
-```text
+```bash
 λ  dart name_example.dart 'Jack Warren'
 [Given]: Jack [Family]: Warren
 
@@ -61,7 +61,7 @@ void main(List<String> arguments) =>
 ```
 
 Demo:
-```text
+```bash
 λ  dart date_example.dart 'January 1st, 2019'
 [Day]: 1 [Month]: 1 [Year]: 2019
 
