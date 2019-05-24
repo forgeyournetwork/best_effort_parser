@@ -76,8 +76,8 @@ Demo:
 [Month]: 3 [Year]: 2010
 [Month]: 6 [Year]: 2010
 
-λ  dart date_example.dart '1999-15-6'
-[Day]: 6 [Month]: 3 [Year]: 1999
+λ  dart date_example.dart '1999-6-15'
+[Day]: 15 [Month]: 6 [Year]: 1999
 ```
 
 Customization of both parsing and output type is available.
