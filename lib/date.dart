@@ -16,6 +16,16 @@ typedef DateParserOutput<T> = T Function(int year, [int month, int day]);
 /// first (i.e. MMMM/DD/YY becomes YYYY/MM/DD).
 /// - [yearFirst]: assume year/month/day, but fall back to [dayFirst] if the year is obviously
 /// last (i.e. YY/MM/DDDD becomes DD/MM/YYYY).
+///
+/// It should be noted that some dates are plainly unambiguous, and the date
+/// format set here has no effect. Specifically, suppose 40-20-10: even
+/// though year-day-month isn't a correct date format anywhere in the world,
+/// it is obvious that 40 must represent a 2-digit year, 20 may only
+/// represent a day, and 10 may only represent a month.
+///
+/// In other words, month must be 0<m<=12, and if there is number 12<d<=31
+/// and another number 31<y, the parser can disambiguate which number is
+/// mapped to what date part.
 enum CompactDateFormat { dayFirst, monthFirst, yearFirst }
 
 /// A parser designed to extract dates from an arbitrary string. The [parse] method will create a
@@ -36,6 +46,10 @@ enum CompactDateFormat { dayFirst, monthFirst, yearFirst }
 /// and 2010 as a year. "January" would contribute 1 as a month, "20" or "20th" would both
 /// contribute 20 as a day, and "2010-2015" would contribute 2010 and 2015 as years. Because
 /// [basic] settings include season-to-month translation, "spring" would contribute 3 as a month.
+/// See [CompactDateFormat], [defaultSeasons], [defaultMonths],
+/// [defaultDigitSuffixes], [defaultFourDigitOffsets], and
+/// [defaultSeasonToMonthApproximations] for more information on [basic]
+/// settings (and customizing them).
 ///
 /// **Assembly** turns those days, months, and years into [T] objects. Each list is iterated over
 /// in tandem: if any list has more terms, an iteration occurs and a [T] is made from the most
@@ -236,6 +250,21 @@ class DateParser<T> {
             .map(int.tryParse)
             .map((int n) => n ?? 1)
             .toList(growable: false);
+
+        // check if we have {y>31, 31>=d>12, 12>=m>0}, because then we don't
+        // need to worry about the date format
+        final numbersOrdered = List.of(numbers)..sort();
+        if (12 >= numbersOrdered[0] &&
+            numbersOrdered[1] > 12 &&
+            31 >= numbersOrdered[1] &&
+            numbersOrdered[2] > 31) {
+          monthParts.add(_toMonth(numbersOrdered[0]));
+          dayParts.add(_toDay(numbersOrdered[1]));
+          yearParts.add(_toYear(numbersOrdered[2]));
+          return;
+        }
+
+        // parse parsed on quantity of digits and the date format
         if (numbers[0].toString().length <= 2 &&
             numbers[1].toString().length <= 2 &&
             numbers[2].toString().length >= 4 &&
