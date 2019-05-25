@@ -176,15 +176,15 @@ main() {
       test('can interpret compact dates as being day-first', () {
         expect(
             DateParser.basic(compactDateFormat: CompactDateFormat.dayFirst)
-                .parse('11/12/13'),
-            equals([ParsedDate(2013, 12, 11)]));
+                .parse('10/11/12'),
+            equals([ParsedDate(2012, 11, 10)]));
       });
 
       test('can interpret compact dates as being year-first', () {
         expect(
             DateParser.basic(compactDateFormat: CompactDateFormat.yearFirst)
-                .parse('11/12/13'),
-            equals([ParsedDate(2011, 12, 13)]));
+                .parse('10/11/12'),
+            equals([ParsedDate(2010, 11, 12)]));
       });
 
       test('overrides year-first if the year is obviously last', () {
@@ -195,12 +195,12 @@ main() {
       });
 
       test('overrides day/month-first if the year is obviously first', () {
-        expect(DateParser.basic().parse('2011/12/13'),
-            equals([ParsedDate(2011, 12, 13)]));
+        expect(DateParser.basic().parse('2011/11/12'),
+            equals([ParsedDate(2011, 11, 12)]));
         expect(
             DateParser.basic(compactDateFormat: CompactDateFormat.dayFirst)
-                .parse('2011/12/13'),
-            equals([ParsedDate(2011, 12, 13)]));
+                .parse('2011/11/12'),
+            equals([ParsedDate(2011, 11, 12)]));
       });
 
       test('makes sure the day isn\'t above 31', () {
@@ -215,6 +215,11 @@ main() {
         DateParserOutput<int> customOutput =
             (int year, [int month, int day]) => year;
         expect(DateParser(customOutput).parse('March 2004'), equals([2004]));
+      });
+
+      test('ignores the date format for obvious dates', () {
+        expect(DateParser.basic().parse('40,20,10'),
+            equals([ParsedDate(1940, 10, 20)]));
       });
     });
   });
