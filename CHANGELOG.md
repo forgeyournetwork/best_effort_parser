@@ -1,3 +1,8 @@
+## 1.1.0
+
+- Improve handling of unambiguous compact dates
+    - __Technically a slight breaking change__, in that dates are compact dates are handled more consistently. For example, given a date like "10/20/2000", the month will always be 10 because it can't be 20, regardless of any compact date format set in the constructor.
+
 ## 1.0.2
 
 - Update `README.md` title (package name already at the top of the page on pub)
