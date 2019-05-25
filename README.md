@@ -78,7 +78,12 @@ Demo:
 
 λ  dart date_example.dart '1999-6-15'
 [Day]: 15 [Month]: 6 [Year]: 1999
+
+λ  dart date_example.dart '40 20 10'
+[Day]: 20 [Month]: 10 [Year]: 1940
 ```
+
+As seen in the last example especially, the parser will do its best even in the face of _very_ odd input. In that example, 40 can't be a day or month, and 20 can't be a month, so a year-day-month format will be used for that date only.
 
 Customization of both parsing and output type is available.
 
