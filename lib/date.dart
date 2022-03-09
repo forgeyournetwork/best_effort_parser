@@ -316,7 +316,8 @@ class DateParser<T> {
         int asNumber = int.tryParse(part.replaceAll(_digitSuffixes, ''));
         if (asNumber != null) {
           var indexOfPart = match.start - 1 > 0 ? match.start - 1 : 0;
-          if (asNumber.toString().length <= 2 && text[match.start] != '\'') {
+          if (asNumber.toString().length <= 2 &&
+              !['\'', '‘'].contains(text[indexOfPart])) {
             dayParts.add(_toDay(asNumber));
           } else {
             yearParts.add(_toYear(asNumber));
