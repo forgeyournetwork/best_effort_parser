@@ -262,20 +262,20 @@ class DateParser<T> {
             numbersOrdered[2] > 31) {
           monthParts.add(
             DatePart(
-              value: _toMonth(numbersOrdered[0]),
-              text: '',
+              _toMonth(numbersOrdered[0]),
+              '',
             ),
           );
           dayParts.add(
             DatePart(
-              value: _toDay(numbersOrdered[1]),
-              text: '',
+              _toDay(numbersOrdered[1]),
+              '',
             ),
           );
           yearParts.add(
             DatePart(
-              value: _toYear(numbersOrdered[2]),
-              text: '',
+              _toYear(numbersOrdered[2]),
+              '',
             ),
           );
           return;
@@ -289,20 +289,20 @@ class DateParser<T> {
           // Found DD/MM/YYYY when format is YY/MM/DD
           dayParts.add(
             DatePart(
-              value: _toDay(numbers[0]),
-              text: '',
+              _toDay(numbers[0]),
+              '',
             ),
           );
           monthParts.add(
             DatePart(
-              value: _toMonth(numbers[1]),
-              text: '',
+              _toMonth(numbers[1]),
+              '',
             ),
           );
           yearParts.add(
             DatePart(
-              value: _toYear(numbersOrdered[2]),
-              text: '',
+              _toYear(numbersOrdered[2]),
+              '',
             ),
           );
         } else if ((numbers[0].toString().length >= 4 &&
@@ -312,60 +312,60 @@ class DateParser<T> {
           // Found YYYY/MM/DD or format is YY/MM/DD
           yearParts.add(
             DatePart(
-              value: _toYear(numbersOrdered[0]),
-              text: '',
+              _toYear(numbersOrdered[0]),
+              '',
             ),
           );
           monthParts.add(
             DatePart(
-              value: _toMonth(numbers[1]),
-              text: '',
+              _toMonth(numbers[1]),
+              '',
             ),
           );
           dayParts.add(
             DatePart(
-              value: _toDay(numbers[2]),
-              text: '',
+              _toDay(numbers[2]),
+              '',
             ),
           );
         } else if (_compactDateFormat == CompactDateFormat.dayFirst) {
           // Format is DD/MM/YY
           dayParts.add(
             DatePart(
-              value: _toDay(numbers[0]),
-              text: '',
+              _toDay(numbers[0]),
+              '',
             ),
           );
           monthParts.add(
             DatePart(
-              value: _toMonth(numbers[1]),
-              text: '',
+              _toMonth(numbers[1]),
+              '',
             ),
           );
           yearParts.add(
             DatePart(
-              value: _toYear(numbersOrdered[2]),
-              text: '',
+              _toYear(numbersOrdered[2]),
+              '',
             ),
           );
         } else if (_compactDateFormat == CompactDateFormat.monthFirst) {
           // Format is MM/DD/YY
           monthParts.add(
             DatePart(
-              value: _toMonth(numbers[0]),
-              text: '',
+              _toMonth(numbers[0]),
+              '',
             ),
           );
           dayParts.add(
             DatePart(
-              value: _toDay(numbers[1]),
-              text: '',
+              _toDay(numbers[1]),
+              '',
             ),
           );
           yearParts.add(
             DatePart(
-              value: _toYear(numbersOrdered[2]),
-              text: '',
+              _toYear(numbersOrdered[2]),
+              '',
             ),
           );
         }
@@ -378,8 +378,8 @@ class DateParser<T> {
           if (part.contains(_months[m])) {
             monthParts.add(
               DatePart(
-                value: m + 1,
-                text: part,
+                m + 1,
+                part,
               ),
             );
           }
@@ -391,9 +391,9 @@ class DateParser<T> {
             if (part.contains(_seasons[s])) {
               monthParts.add(
                 DatePart(
-                  value: _seasonToMonth[s + 1] ??
+                  _seasonToMonth[s + 1] ??
                       defaultSeasonToMonthApproximations[s + 1],
-                  text: part,
+                  part,
                 ),
               );
             }
@@ -409,15 +409,15 @@ class DateParser<T> {
               !['\'', '‘'].contains(text[indexOfPart])) {
             dayParts.add(
               DatePart(
-                value: _toDay(asNumber),
-                text: part,
+                _toDay(asNumber),
+                part,
               ),
             );
           } else {
             yearParts.add(
               DatePart(
-                value: _toYear(asNumber),
-                text: part,
+                _toYear(asNumber),
+                part,
               ),
             );
           }
@@ -444,12 +444,12 @@ class DateParser<T> {
         if (yearCurrent != null && monthCurrent != null && dayCurrent != null) {
           // If all three parts aren't null, supply all three
           ret.add(DetectedDate(
-            date: _dateParserOutput(
+            _dateParserOutput(
               yearCurrent.value,
               monthCurrent.value,
               dayCurrent.value,
             ),
-            triggerTexts: [
+            [
               yearCurrent.text,
               monthCurrent.text,
               dayCurrent.text,
@@ -458,8 +458,8 @@ class DateParser<T> {
         } else if (yearCurrent != null && monthCurrent != null) {
           // Otherwise, if year and month aren't null, supply those
           ret.add(DetectedDate(
-            date: _dateParserOutput(yearCurrent.value, monthCurrent.value),
-            triggerTexts: [
+            _dateParserOutput(yearCurrent.value, monthCurrent.value),
+            [
               yearCurrent.text,
               monthCurrent.text,
             ],
@@ -467,8 +467,8 @@ class DateParser<T> {
         } else if (yearCurrent != null) {
           // Otherwise, if year isn't null, supply that
           ret.add(DetectedDate(
-            date: _dateParserOutput(yearCurrent.value),
-            triggerTexts: [
+            _dateParserOutput(yearCurrent.value),
+            [
               yearCurrent.text,
             ],
           ));
