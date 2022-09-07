@@ -426,7 +426,7 @@ class DateParser<T> {
     });
 
     // Iterate through parts and construct T objects from them
-    final List<DetectedDate> ret = [];
+    final List<T> ret = <T>[];
     final dayPartIterator = dayParts.where((i) => i != null).iterator;
     final monthPartIterator = monthParts.where((i) => i != null).iterator;
     final yearPartIterator = yearParts.where((i) => i != null).iterator;

@@ -1,21 +1,21 @@
 import 'dart:convert';
 
 class DatePart {
-  final int? value;
+  final int value;
   final String text;
 
-  DatePart({
-    required this.value,
-    required this.text,
-  });
+  DatePart(
+    this.value,
+    this.text,
+  );
 
   DatePart copyWith({
-    int? value,
-    String? text,
+    int value,
+    String text,
   }) {
     return DatePart(
-      value: value ?? this.value,
-      text: text ?? this.text,
+      value ?? this.value,
+      text ?? this.text,
     );
   }
 
@@ -28,8 +28,8 @@ class DatePart {
 
   factory DatePart.fromMap(Map<String, dynamic> map) {
     return DatePart(
-      value: map['value']?.toInt(),
-      text: map['text'] ?? '',
+      map['value']?.toInt(),
+      map['text'] ?? '',
     );
   }
 

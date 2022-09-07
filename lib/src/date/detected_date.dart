@@ -1,21 +1,19 @@
-import 'parsed_date.dart';
-
 class DetectedDate {
-  final T date;
+  final dynamic date;
   final List<String> triggerTexts;
 
-  DetectedDate({
-    required this.date,
-    required this.triggerTexts,
-  });
+  DetectedDate(
+    this.date,
+    this.triggerTexts,
+  );
 
   DetectedDate copyWith({
-    T? date,
-    List<String>? triggerTexts,
+    dynamic date,
+    List<String> triggerTexts,
   }) {
     return DetectedDate(
-      date: date ?? this.date,
-      triggerTexts: triggerTexts ?? this.triggerTexts,
+      date ?? this.date,
+      triggerTexts ?? this.triggerTexts,
     );
   }
 
