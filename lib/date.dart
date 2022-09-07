@@ -1,6 +1,8 @@
 import 'dart:collection';
 
+import 'src/date/date_part.dart';
 import 'src/date/parsed_date.dart';
+import 'src/date/detected_date.dart';
 
 /// Type of function used to produce output from [DateParser]'s [parse] method.
 ///
@@ -236,7 +238,7 @@ class DateParser<T> {
   /// empty. This function will never return null.
   List<T> parse(String text) {
     if (text == null) return <T>[];
-    final List<int> dayParts = [], monthParts = [], yearParts = [];
+    final List<DatePart> dayParts = [], monthParts = [], yearParts = [];
 
     // collect parts
     RegExp(r'((?:[\d]+\D){2}[\d]+)|([^\W_]+)')
@@ -258,9 +260,24 @@ class DateParser<T> {
             numbersOrdered[1] > 12 &&
             31 >= numbersOrdered[1] &&
             numbersOrdered[2] > 31) {
-          monthParts.add(_toMonth(numbersOrdered[0]));
-          dayParts.add(_toDay(numbersOrdered[1]));
-          yearParts.add(_toYear(numbersOrdered[2]));
+          monthParts.add(
+            DatePart(
+              value: _toMonth(numbersOrdered[0]),
+              text: '',
+            ),
+          );
+          dayParts.add(
+            DatePart(
+              value: _toDay(numbersOrdered[1]),
+              text: '',
+            ),
+          );
+          yearParts.add(
+            DatePart(
+              value: _toYear(numbersOrdered[2]),
+              text: '',
+            ),
+          );
           return;
         }
 
@@ -270,27 +287,87 @@ class DateParser<T> {
             numbers[2].toString().length >= 4 &&
             _compactDateFormat == CompactDateFormat.yearFirst) {
           // Found DD/MM/YYYY when format is YY/MM/DD
-          dayParts.add(_toDay(numbers[0]));
-          monthParts.add(_toMonth(numbers[1]));
-          yearParts.add(_toYear(numbers[2]));
+          dayParts.add(
+            DatePart(
+              value: _toDay(numbers[0]),
+              text: '',
+            ),
+          );
+          monthParts.add(
+            DatePart(
+              value: _toMonth(numbers[1]),
+              text: '',
+            ),
+          );
+          yearParts.add(
+            DatePart(
+              value: _toYear(numbersOrdered[2]),
+              text: '',
+            ),
+          );
         } else if ((numbers[0].toString().length >= 4 &&
                 numbers[1].toString().length <= 2 &&
                 numbers[2].toString().length <= 2) ||
             _compactDateFormat == CompactDateFormat.yearFirst) {
           // Found YYYY/MM/DD or format is YY/MM/DD
-          yearParts.add(_toYear(numbers[0]));
-          monthParts.add(_toMonth(numbers[1]));
-          dayParts.add(_toDay(numbers[2]));
+          yearParts.add(
+            DatePart(
+              value: _toYear(numbersOrdered[0]),
+              text: '',
+            ),
+          );
+          monthParts.add(
+            DatePart(
+              value: _toMonth(numbers[1]),
+              text: '',
+            ),
+          );
+          dayParts.add(
+            DatePart(
+              value: _toDay(numbers[2]),
+              text: '',
+            ),
+          );
         } else if (_compactDateFormat == CompactDateFormat.dayFirst) {
           // Format is DD/MM/YY
-          dayParts.add(_toDay(numbers[0]));
-          monthParts.add(_toMonth(numbers[1]));
-          yearParts.add(_toYear(numbers[2]));
+          dayParts.add(
+            DatePart(
+              value: _toDay(numbers[0]),
+              text: '',
+            ),
+          );
+          monthParts.add(
+            DatePart(
+              value: _toMonth(numbers[1]),
+              text: '',
+            ),
+          );
+          yearParts.add(
+            DatePart(
+              value: _toYear(numbersOrdered[2]),
+              text: '',
+            ),
+          );
         } else if (_compactDateFormat == CompactDateFormat.monthFirst) {
           // Format is MM/DD/YY
-          monthParts.add(_toMonth(numbers[0]));
-          dayParts.add(_toDay(numbers[1]));
-          yearParts.add(_toYear(numbers[2]));
+          monthParts.add(
+            DatePart(
+              value: _toMonth(numbers[0]),
+              text: '',
+            ),
+          );
+          dayParts.add(
+            DatePart(
+              value: _toDay(numbers[1]),
+              text: '',
+            ),
+          );
+          yearParts.add(
+            DatePart(
+              value: _toYear(numbersOrdered[2]),
+              text: '',
+            ),
+          );
         }
       } else if (match.group(2) != null) {
         // Format format matching ([^\W_]+), like `January` or `2000`
@@ -298,15 +375,27 @@ class DateParser<T> {
 
         // Add any month matches
         for (int m = 0; m < _months.length; m++) {
-          if (part.contains(_months[m])) monthParts.add(m + 1);
+          if (part.contains(_months[m])) {
+            monthParts.add(
+              DatePart(
+                value: m + 1,
+                text: part,
+              ),
+            );
+          }
         }
 
         // Add any season matches as month matches if allowed to
         if (_seasons.isNotEmpty && _seasonToMonth != null) {
           for (int s = 0; s < _seasons.length; s++) {
             if (part.contains(_seasons[s])) {
-              monthParts.add(_seasonToMonth[s + 1] ??
-                  defaultSeasonToMonthApproximations[s + 1]);
+              monthParts.add(
+                DatePart(
+                  value: _seasonToMonth[s + 1] ??
+                      defaultSeasonToMonthApproximations[s + 1],
+                  text: part,
+                ),
+              );
             }
           }
         }
@@ -318,21 +407,31 @@ class DateParser<T> {
           var indexOfPart = match.start - 1 > 0 ? match.start - 1 : 0;
           if (asNumber.toString().length <= 2 &&
               !['\'', '‘'].contains(text[indexOfPart])) {
-            dayParts.add(_toDay(asNumber));
+            dayParts.add(
+              DatePart(
+                value: _toDay(asNumber),
+                text: part,
+              ),
+            );
           } else {
-            yearParts.add(_toYear(asNumber));
+            yearParts.add(
+              DatePart(
+                value: _toYear(asNumber),
+                text: part,
+              ),
+            );
           }
         }
       }
     });
 
     // Iterate through parts and construct T objects from them
-    final List<T> ret = <T>[];
+    final List<DetectedDate> ret = [];
     final dayPartIterator = dayParts.where((i) => i != null).iterator;
     final monthPartIterator = monthParts.where((i) => i != null).iterator;
     final yearPartIterator = yearParts.where((i) => i != null).iterator;
     bool moreDays, moreMonths, moreYears;
-    int dayCurrent, monthCurrent, yearCurrent;
+    DatePart dayCurrent, monthCurrent, yearCurrent;
     do {
       moreDays = dayPartIterator.moveNext();
       moreMonths = monthPartIterator.moveNext();
@@ -344,13 +443,35 @@ class DateParser<T> {
         yearCurrent = yearPartIterator.current ?? yearCurrent;
         if (yearCurrent != null && monthCurrent != null && dayCurrent != null) {
           // If all three parts aren't null, supply all three
-          ret.add(_dateParserOutput(yearCurrent, monthCurrent, dayCurrent));
+          ret.add(DetectedDate(
+            date: _dateParserOutput(
+              yearCurrent.value,
+              monthCurrent.value,
+              dayCurrent.value,
+            ),
+            triggerTexts: [
+              yearCurrent.text,
+              monthCurrent.text,
+              dayCurrent.text,
+            ],
+          ));
         } else if (yearCurrent != null && monthCurrent != null) {
           // Otherwise, if year and month aren't null, supply those
-          ret.add(_dateParserOutput(yearCurrent, monthCurrent));
+          ret.add(DetectedDate(
+            date: _dateParserOutput(yearCurrent.value, monthCurrent.value),
+            triggerTexts: [
+              yearCurrent.text,
+              monthCurrent.text,
+            ],
+          ));
         } else if (yearCurrent != null) {
           // Otherwise, if year isn't null, supply that
-          ret.add(_dateParserOutput(yearCurrent));
+          ret.add(DetectedDate(
+            date: _dateParserOutput(yearCurrent.value),
+            triggerTexts: [
+              yearCurrent.text,
+            ],
+          ));
         }
       }
     } while (moreDays || moreMonths || moreYears);
