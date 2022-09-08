@@ -263,19 +263,19 @@ class DateParser<T> {
           monthParts.add(
             DatePart(
               _toMonth(numbersOrdered[0]),
-              '',
+              numbersOrdered[0].toString(),
             ),
           );
           dayParts.add(
             DatePart(
               _toDay(numbersOrdered[1]),
-              '',
+              numbersOrdered[1].toString(),
             ),
           );
           yearParts.add(
             DatePart(
               _toYear(numbersOrdered[2]),
-              '',
+              numbersOrdered[2].toString(),
             ),
           );
           return;
@@ -290,19 +290,19 @@ class DateParser<T> {
           dayParts.add(
             DatePart(
               _toDay(numbers[0]),
-              '',
+              numbers[0].toString(),
             ),
           );
           monthParts.add(
             DatePart(
               _toMonth(numbers[1]),
-              '',
+              numbers[1].toString(),
             ),
           );
           yearParts.add(
             DatePart(
               _toYear(numbersOrdered[2]),
-              '',
+              numbers[2].toString(),
             ),
           );
         } else if ((numbers[0].toString().length >= 4 &&
@@ -313,19 +313,19 @@ class DateParser<T> {
           yearParts.add(
             DatePart(
               _toYear(numbersOrdered[0]),
-              '',
+              numbers[0].toString(),
             ),
           );
           monthParts.add(
             DatePart(
               _toMonth(numbers[1]),
-              '',
+              numbers[1].toString(),
             ),
           );
           dayParts.add(
             DatePart(
               _toDay(numbers[2]),
-              '',
+              numbers[2].toString(),
             ),
           );
         } else if (_compactDateFormat == CompactDateFormat.dayFirst) {
@@ -333,19 +333,19 @@ class DateParser<T> {
           dayParts.add(
             DatePart(
               _toDay(numbers[0]),
-              '',
+              numbers[0].toString(),
             ),
           );
           monthParts.add(
             DatePart(
               _toMonth(numbers[1]),
-              '',
+              numbers[1].toString(),
             ),
           );
           yearParts.add(
             DatePart(
               _toYear(numbersOrdered[2]),
-              '',
+              numbers[2].toString(),
             ),
           );
         } else if (_compactDateFormat == CompactDateFormat.monthFirst) {
@@ -353,19 +353,19 @@ class DateParser<T> {
           monthParts.add(
             DatePart(
               _toMonth(numbers[0]),
-              '',
+              numbers[0].toString(),
             ),
           );
           dayParts.add(
             DatePart(
               _toDay(numbers[1]),
-              '',
+              numbers[1].toString(),
             ),
           );
           yearParts.add(
             DatePart(
               _toYear(numbersOrdered[2]),
-              '',
+              numbers[2].toString(),
             ),
           );
         }
