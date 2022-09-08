@@ -236,8 +236,8 @@ class DateParser<T> {
   ///
   /// If the [text] is empty, null, or doesn't contain a parsable date, the output list will be
   /// empty. This function will never return null.
-  List<T> parse(String text) {
-    if (text == null) return <T>[];
+  List<DetectedDate> parse(String text) {
+    if (text == null) return [];
     final List<DatePart> dayParts = [], monthParts = [], yearParts = [];
 
     // collect parts
@@ -426,7 +426,7 @@ class DateParser<T> {
     });
 
     // Iterate through parts and construct T objects from them
-    final List<T> ret = <T>[];
+    final List<DetectedDate> ret = [];
     final dayPartIterator = dayParts.where((i) => i != null).iterator;
     final monthPartIterator = monthParts.where((i) => i != null).iterator;
     final yearPartIterator = yearParts.where((i) => i != null).iterator;
