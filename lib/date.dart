@@ -301,7 +301,7 @@ class DateParser<T> {
           );
           yearParts.add(
             DatePart(
-              _toYear(numbersOrdered[2]),
+              _toYear(numbers[2]),
               numbers[2].toString(),
             ),
           );
@@ -312,7 +312,7 @@ class DateParser<T> {
           // Found YYYY/MM/DD or format is YY/MM/DD
           yearParts.add(
             DatePart(
-              _toYear(numbersOrdered[0]),
+              _toYear(numbers[0]),
               numbers[0].toString(),
             ),
           );
@@ -344,7 +344,7 @@ class DateParser<T> {
           );
           yearParts.add(
             DatePart(
-              _toYear(numbersOrdered[2]),
+              _toYear(numbers[2]),
               numbers[2].toString(),
             ),
           );
@@ -364,7 +364,7 @@ class DateParser<T> {
           );
           yearParts.add(
             DatePart(
-              _toYear(numbersOrdered[2]),
+              _toYear(numbers[2]),
               numbers[2].toString(),
             ),
           );
