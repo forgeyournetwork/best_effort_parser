@@ -476,6 +476,67 @@ class DateParser<T> {
       }
     } while (moreDays || moreMonths || moreYears);
 
+    var textDates = {
+      'today': 0,
+      'tomorrow': 1,
+      'yesterday': -1,
+    };
+
+    var weekTextDates = {
+      'sunday': DateTime.sunday,
+      'monday': DateTime.monday,
+      'tuesday': DateTime.tuesday,
+      'wednesday': DateTime.wednesday,
+      'thursday': DateTime.thursday,
+      'friday': DateTime.friday,
+      'saturday': DateTime.saturday,
+    };
+
+    for (var textDateKey in textDates.keys) {
+      if (text.contains(RegExp(textDateKey, caseSensitive: false))) {
+        var now = DateTime.now();
+        ret.add(DetectedDate(
+          DateTime(now.year, now.month, now.day)
+              .add(Duration(days: textDates[textDateKey])),
+          [textDateKey],
+        ));
+      }
+    }
+
+    for (var weekTextDateKey in weekTextDates.keys) {
+      var triggerText = 'last $weekTextDateKey';
+      if (text.contains(RegExp(triggerText, caseSensitive: false))) {
+        var now = DateTime.now();
+        var weekday = now.weekday;
+
+        // Calculate the difference between the current weekday and weekTextDate
+        var daysUntilLastWeekTextDate =
+            (weekday - weekTextDates[weekTextDateKey]) % 7;
+
+        ret.add(DetectedDate(
+          // Subtract the difference to get the date of the last weekTextDate
+          now.subtract(Duration(days: daysUntilLastWeekTextDate)),
+          [triggerText],
+        ));
+      }
+
+      triggerText = 'next $weekTextDateKey';
+      if (text.contains(RegExp(triggerText, caseSensitive: false))) {
+        var now = DateTime.now();
+        var weekday = now.weekday;
+
+        // Calculate the number of days until the next weekTextDate
+        var daysUntilNextWeekTextDate =
+            weekTextDates[weekTextDateKey] - weekday + 7;
+
+        ret.add(DetectedDate(
+          // Add the days to the current date to get the date of the next weekTextDate
+          now.add(Duration(days: daysUntilNextWeekTextDate)),
+          [triggerText],
+        ));
+      }
+    }
+
     return ret;
   }
 
