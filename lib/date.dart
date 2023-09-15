@@ -542,7 +542,8 @@ class DateParser<T> {
         var weekday = now.weekday;
 
         // Calculate the number of days until the next weekTextDate
-        var daysUntilNextWeekTextDate = 7 - weekday;
+        var daysUntilNextWeekTextDate =
+            weekTextDates[weekTextDateKey] - weekday;
 
         ret.add(DetectedDate(
           // Add the days to the current date to get the date of the current weekTextDate
