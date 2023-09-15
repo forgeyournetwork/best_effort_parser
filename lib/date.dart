@@ -535,6 +535,21 @@ class DateParser<T> {
           [triggerText],
         ));
       }
+
+      triggerText = 'on $weekTextDateKey';
+      if (text.contains(RegExp('\\b$triggerText\\b', caseSensitive: false))) {
+        var now = DateTime.now();
+        var weekday = now.weekday;
+
+        // Calculate the number of days until the next weekTextDate
+        var daysUntilNextWeekTextDate = 7 - weekday;
+
+        ret.add(DetectedDate(
+          // Add the days to the current date to get the date of the current weekTextDate
+          now.add(Duration(days: daysUntilNextWeekTextDate)),
+          [triggerText],
+        ));
+      }
     }
 
     return ret;
