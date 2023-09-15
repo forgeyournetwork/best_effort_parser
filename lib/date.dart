@@ -504,8 +504,8 @@ class DateParser<T> {
     }
 
     for (var weekTextDateKey in weekTextDates.keys) {
-      var triggerText = '\\blast $weekTextDateKey\\b';
-      if (text.contains(RegExp(triggerText, caseSensitive: false))) {
+      var triggerText = 'last $weekTextDateKey';
+      if (text.contains(RegExp('\\b$triggerText\\b', caseSensitive: false))) {
         var now = DateTime.now();
         var weekday = now.weekday;
 
@@ -520,8 +520,8 @@ class DateParser<T> {
         ));
       }
 
-      triggerText = '\\bnext $weekTextDateKey\\b';
-      if (text.contains(RegExp(triggerText, caseSensitive: false))) {
+      triggerText = 'next $weekTextDateKey';
+      if (text.contains(RegExp('\\b$triggerText\\b', caseSensitive: false))) {
         var now = DateTime.now();
         var weekday = now.weekday;
 
