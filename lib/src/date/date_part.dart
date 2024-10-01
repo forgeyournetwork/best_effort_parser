@@ -10,8 +10,8 @@ class DatePart {
   );
 
   DatePart copyWith({
-    int value,
-    String text,
+    int? value,
+    String? text,
   }) {
     return DatePart(
       value ?? this.value,

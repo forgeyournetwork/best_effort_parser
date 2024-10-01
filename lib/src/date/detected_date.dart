@@ -9,7 +9,7 @@ class DetectedDate {
 
   DetectedDate copyWith({
     dynamic date,
-    List<String> triggerTexts,
+    List<String>? triggerTexts,
   }) {
     return DetectedDate(
       date ?? this.date,

@@ -100,22 +100,22 @@ main() {
       });
 
       test('can have customized month parsing', () {
-        final List<String> customMonths = List.from(DateParser.defaultMonths);
+        final customMonths = List<String>.from(DateParser.defaultMonths);
         customMonths[0] = 'foo';
         expect(DateParser.basic(months: customMonths).parse('foo 2020'),
             equals([ParsedDate(2020, 1)]));
       });
 
       test('can have customized season parsing', () {
-        final List<String> customSeasons = List.from(DateParser.defaultSeasons);
+        final customSeasons = List<String>.from(DateParser.defaultSeasons);
         customSeasons[0] = 'foo';
         expect(DateParser.basic(seasons: customSeasons).parse('foo 2020'),
             equals([ParsedDate(2020, 3)]));
       });
 
       test('can have custom assignment of seasons to months', () {
-        final Map<int, int> customSeasonToMonth =
-            Map.from(DateParser.defaultSeasonToMonthApproximations);
+        final customSeasonToMonth =
+            Map<int, int>.from(DateParser.defaultSeasonToMonthApproximations);
         customSeasonToMonth[1] = 21;
         expect(
             DateParser.basic(seasonToMonth: customSeasonToMonth)
@@ -124,15 +124,21 @@ main() {
       });
 
       test('ignores seasons if it cannot translate them', () {
-        expect(DateParser.basic(seasons: null).parse('spring 2019').first.month,
+        expect(
+            DateParser.basic(/* seasons: null */)
+                .parse('spring 2019')
+                .first
+                .date
+                .month,
             isNull);
       });
 
       test('ignores seasons if it cannot encode them as months', () {
         expect(
-            DateParser.basic(seasonToMonth: null)
+            DateParser.basic(/* seasonToMonth: null */)
                 .parse('spring 2019')
                 .first
+                .date
                 .month,
             isNull);
       });
@@ -145,19 +151,21 @@ main() {
 
       test('can ignore digit suffixes by setting the pattern to null', () {
         expect(
-            DateParser.basic(digitSuffixes: null)
+            DateParser.basic(/* digitSuffixes: null */)
                 .parse('1st jan 2000')
                 .first
+                .date
                 .day,
             isNull);
       });
 
       test('can have custom expansion of years to four digits', () {
-        final Map<int, int> customToFourDigits = {50: 2000, 100: 1900};
+        final customToFourDigits = <int, int>{50: 2000, 100: 1900};
         expect(
             DateParser.basic(fourDigitOffsets: customToFourDigits)
                 .parse('10/15/45')
                 .first
+                .date
                 .year,
             equals(2045));
       });
@@ -166,9 +174,10 @@ main() {
           'can have expansion of years to four digits disabled by setting the parameter to '
           'null', () {
         expect(
-            DateParser.basic(fourDigitOffsets: null)
+            DateParser.basic(/* fourDigitOffsets: null */)
                 .parse('10/15/45')
                 .first
+                .date
                 .year,
             equals(45));
       });
@@ -204,16 +213,17 @@ main() {
       });
 
       test('makes sure the day isn\'t above 31', () {
-        expect(DateParser.basic().parse('5,46,2000').first.day, equals(15));
+        expect(
+            DateParser.basic().parse('5,46,2000').first.date.day, equals(15));
       });
 
       test('makes sure the month isn\'t above 12', () {
-        expect(DateParser.basic().parse('18-5-20').first.month, equals(6));
+        expect(DateParser.basic().parse('18-5-20').first.date.month, equals(6));
       });
 
       test('can output in custom formats', () {
         DateParserOutput<int> customOutput =
-            (int year, [int month, int day]) => year;
+            (int year, [int? month, int? day]) => year;
         expect(DateParser(customOutput).parse('March 2004'), equals([2004]));
       });
 
@@ -240,8 +250,8 @@ main() {
           ParsedDate(2000, 10, 10),
           ParsedDate(2000, 10, 5)
         ];
-        for (int a = 0; a < samples.length; a++) {
-          for (int b = 0; b < samples.length; b++) {
+        for (var a = 0; a < samples.length; a++) {
+          for (var b = 0; b < samples.length; b++) {
             expect(samples[a] == samples[b], a == b);
           }
         }
@@ -251,8 +261,8 @@ main() {
     group('toDateTime', () {
       test('creates the expected DateTime', () {
         final r = Random();
-        for (int i = 0; i < 3; i++) {
-          int y = r.nextInt(2500), m = r.nextInt(12), d = r.nextInt(28);
+        for (var i = 0; i < 3; i++) {
+          var y = r.nextInt(2500), m = r.nextInt(12), d = r.nextInt(28);
           expect(ParsedDate(y).toDateTime(), DateTime(y));
           expect(ParsedDate(y, m).toDateTime(), DateTime(y, m));
           expect(ParsedDate(y, m, d).toDateTime(), DateTime(y, m, d));
@@ -263,7 +273,7 @@ main() {
     group('toString', () {
       test('is the same as diagnosticString', () {
         final r = Random();
-        for (int i = 0; i < 3; i++) {
+        for (var i = 0; i < 3; i++) {
           var result =
               ParsedDate(r.nextInt(2500), r.nextInt(12), r.nextInt(28));
           expect(result.toString(), result.diagnosticString());

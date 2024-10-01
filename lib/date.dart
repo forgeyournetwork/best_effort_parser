@@ -161,12 +161,12 @@ class DateParser<T> {
     4: 12 // Winter starts in December
   };
 
-  List<RegExp> _seasons, _months;
-  RegExp _digitSuffixes;
-  SplayTreeMap<int, int> _fourDigitOffsets;
-  Map<int, int> _seasonToMonth;
-  CompactDateFormat _compactDateFormat;
-  DateParserOutput<T> _dateParserOutput;
+  late List<RegExp> _seasons, _months;
+  late RegExp _digitSuffixes;
+  late SplayTreeMap<int, int> _fourDigitOffsets;
+  Map<int, int>? _seasonToMonth;
+  late CompactDateFormat _compactDateFormat;
+  late DateParserOutput<T> _dateParserOutput;
 
   /// Constructor for [DateParser], specifying the output format with the option to customize the
   /// behavior of [parse].
@@ -191,19 +191,21 @@ class DateParser<T> {
   /// [Pattern]s accepted as input to this function will be made to all be [RegExp]s: [Pattern]'s
   /// implementations are [String] and [RegExp], so any [String]s will be passed to the [RegExp]
   /// constructor and any [RegExp]s will be left as is.
-  DateParser(DateParserOutput<T> dateParserOutput,
-      {CompactDateFormat compactDateFormat = CompactDateFormat.monthFirst,
-      List<Pattern> months = defaultMonths,
-      List<Pattern> seasons = defaultSeasons,
-      Map<int, int> seasonToMonth = defaultSeasonToMonthApproximations,
-      Pattern digitSuffixes = defaultDigitSuffixes,
-      Map<int, int> fourDigitOffsets = defaultFourDigitOffsets}) {
+  DateParser(
+    DateParserOutput<T> dateParserOutput, {
+    CompactDateFormat compactDateFormat = CompactDateFormat.monthFirst,
+    List<Pattern> months = defaultMonths,
+    List<Pattern> seasons = defaultSeasons,
+    Map<int, int> seasonToMonth = defaultSeasonToMonthApproximations,
+    Pattern digitSuffixes = defaultDigitSuffixes,
+    Map<int, int> fourDigitOffsets = defaultFourDigitOffsets,
+  }) {
     _dateParserOutput = dateParserOutput;
     _compactDateFormat = compactDateFormat;
     _months = months.map(_toRegExp).toList();
-    _seasons = (seasons != null ? seasons : <String>[]).map(_toRegExp).toList();
-    _digitSuffixes = _toRegExp(digitSuffixes ?? '');
-    _fourDigitOffsets = SplayTreeMap.of(fourDigitOffsets ?? {});
+    _seasons = seasons.map(_toRegExp).toList();
+    _digitSuffixes = _toRegExp(digitSuffixes);
+    _fourDigitOffsets = SplayTreeMap.of(fourDigitOffsets);
     _seasonToMonth = seasonToMonth;
   }
 
@@ -212,13 +214,14 @@ class DateParser<T> {
   ///
   /// [ParsedDate] is an immutable value class with accessors for the year, month, and day and
   /// methods to transform it into a diagnostic string or [DateTime] object.
-  static DateParser<ParsedDate> basic(
-          {CompactDateFormat compactDateFormat = CompactDateFormat.monthFirst,
-          List<Pattern> months = defaultMonths,
-          List<Pattern> seasons = defaultSeasons,
-          Map<int, int> seasonToMonth = defaultSeasonToMonthApproximations,
-          Pattern digitSuffixes = defaultDigitSuffixes,
-          Map<int, int> fourDigitOffsets = defaultFourDigitOffsets}) =>
+  static DateParser<ParsedDate> basic({
+    CompactDateFormat compactDateFormat = CompactDateFormat.monthFirst,
+    List<Pattern> months = defaultMonths,
+    List<Pattern> seasons = defaultSeasons,
+    Map<int, int> seasonToMonth = defaultSeasonToMonthApproximations,
+    Pattern digitSuffixes = defaultDigitSuffixes,
+    Map<int, int> fourDigitOffsets = defaultFourDigitOffsets,
+  }) =>
       DateParser(ParsedDate.constantConstructor,
           compactDateFormat: compactDateFormat,
           months: months,
@@ -236,9 +239,9 @@ class DateParser<T> {
   ///
   /// If the [text] is empty, null, or doesn't contain a parsable date, the output list will be
   /// empty. This function will never return null.
-  List<DetectedDate> parse(String text) {
+  List<DetectedDate> parse(String? text) {
     if (text == null) return [];
-    final List<DatePart> dayParts = [], monthParts = [], yearParts = [];
+    final List<DatePart?> dayParts = [], monthParts = [], yearParts = [];
 
     // collect parts
     RegExp(r'((?:[\d]+\D){2}[\d]+)|([^\W_]+)')
@@ -247,10 +250,10 @@ class DateParser<T> {
       if (match.group(1) != null) {
         // Compact format matching ((?:[\d]+\D){2}[\d]+), like `MM/DD/YY`
         final numbers = RegExp(r'(\d+)')
-            .allMatches(match.group(1))
+            .allMatches(match.group(1)!)
             .map((Match numMatch) => numMatch.group(1))
-            .map(int.tryParse)
-            .map((int n) => n ?? 1)
+            .map((value) => int.tryParse(value ?? ''))
+            .map((n) => n ?? 1)
             .toList(growable: false);
 
         // check if we have {y>31, 31>=d>12, 12>=m>0}, because then we don't
@@ -371,7 +374,7 @@ class DateParser<T> {
         }
       } else if (match.group(2) != null) {
         // Format format matching ([^\W_]+), like `January` or `2000`
-        String part = match.group(2);
+        var part = match.group(2)!;
 
         // Add any month matches
         for (int m = 0; m < _months.length; m++) {
@@ -387,12 +390,14 @@ class DateParser<T> {
 
         // Add any season matches as month matches if allowed to
         if (_seasons.isNotEmpty && _seasonToMonth != null) {
-          for (int s = 0; s < _seasons.length; s++) {
+          for (var s = 0; s < _seasons.length; s++) {
             if (part.contains(_seasons[s])) {
+              var value = _seasonToMonth![s + 1] ??
+                  defaultSeasonToMonthApproximations[s + 1] ??
+                  -1;
               monthParts.add(
                 DatePart(
-                  _seasonToMonth[s + 1] ??
-                      defaultSeasonToMonthApproximations[s + 1],
+                  value,
                   part,
                 ),
               );
@@ -402,7 +407,7 @@ class DateParser<T> {
 
         // Try to create a number from the part, use it as a day if it is at most two digits,
         // year otherwise
-        int asNumber = int.tryParse(part.replaceAll(_digitSuffixes, ''));
+        var asNumber = int.tryParse(part.replaceAll(_digitSuffixes, ''));
         if (asNumber != null) {
           var indexOfPart = match.start - 1 > 0 ? match.start - 1 : 0;
           if (asNumber.toString().length <= 2 &&
@@ -431,7 +436,7 @@ class DateParser<T> {
     final monthPartIterator = monthParts.where((i) => i != null).iterator;
     final yearPartIterator = yearParts.where((i) => i != null).iterator;
     bool moreDays, moreMonths, moreYears;
-    DatePart dayCurrent, monthCurrent, yearCurrent;
+    DatePart? dayCurrent, monthCurrent, yearCurrent;
     do {
       moreDays = dayPartIterator.moveNext();
       moreMonths = monthPartIterator.moveNext();
@@ -497,7 +502,7 @@ class DateParser<T> {
         var now = DateTime.now();
         ret.add(DetectedDate(
           DateTime(now.year, now.month, now.day)
-              .add(Duration(days: textDates[textDateKey])),
+              .add(Duration(days: textDates[textDateKey] ?? 0)),
           [textDateKey],
         ));
       }
@@ -511,7 +516,7 @@ class DateParser<T> {
 
         // Calculate the difference between the current weekday and weekTextDate
         var daysUntilLastWeekTextDate =
-            (weekday - weekTextDates[weekTextDateKey]) % 7;
+            (weekday - (weekTextDates[weekTextDateKey] ?? 0)) % 7;
 
         ret.add(DetectedDate(
           // Subtract the difference to get the date of the last weekTextDate
@@ -527,7 +532,7 @@ class DateParser<T> {
 
         // Calculate the number of days until the next weekTextDate
         var daysUntilNextWeekTextDate =
-            weekTextDates[weekTextDateKey] - weekday + 7;
+            (weekTextDates[weekTextDateKey] ?? 0) - weekday + 7;
 
         ret.add(DetectedDate(
           // Add the days to the current date to get the date of the next weekTextDate
@@ -543,7 +548,7 @@ class DateParser<T> {
 
         // Calculate the number of days until the next weekTextDate
         var daysUntilNextWeekTextDate =
-            weekTextDates[weekTextDateKey] - weekday;
+            (weekTextDates[weekTextDateKey] ?? 0) - weekday;
 
         ret.add(DetectedDate(
           // Add the days to the current date to get the date of the current weekTextDate
@@ -560,7 +565,7 @@ class DateParser<T> {
   int _toYear(int year) {
     if (year.toString().length < 4 &&
         _fourDigitOffsets.firstKeyAfter(year) != null) {
-      return year + _fourDigitOffsets[_fourDigitOffsets.firstKeyAfter(year)];
+      return year + _fourDigitOffsets[_fourDigitOffsets.firstKeyAfter(year)!]!;
     } else {
       return year;
     }

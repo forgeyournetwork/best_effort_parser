@@ -2,20 +2,21 @@ import 'dart:core';
 
 /// Immutable value class for the components of a date.
 class ParsedDate {
-  int _year, _month, _day;
+  late int _year;
+  int? _month, _day;
 
   /// Get the date's year.
   int get year => _year;
 
   /// Get the date's month.
-  int get month => _month;
+  int? get month => _month;
 
   /// Get the date's day.
-  int get day => _day;
+  int? get day => _day;
 
   /// Constructor for [ParsedDate], where if the [year] is null it is stored as 0 but [month] and
   /// [day] are stored as is (null if they aren't provided).
-  ParsedDate(int year, [int month, int day]) {
+  ParsedDate(int? year, [int? month, int? day]) {
     _year = year ?? 0;
     _month = month;
     _day = day;
@@ -23,7 +24,7 @@ class ParsedDate {
 
   /// Static method constructor for [ParsedDate] so that this class may be constructed via
   /// reference.
-  static ParsedDate constantConstructor(int year, [int month, int day]) =>
+  static ParsedDate constantConstructor(int? year, [int? month, int? day]) =>
       ParsedDate(year, month, day);
 
   /// Turn this [ParsedDate] into a Dart [DateTime], using 1 in place of a null [month] or [day].

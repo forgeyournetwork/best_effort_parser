@@ -70,7 +70,7 @@ class NameParser<T> {
 
   /// Internal storage of applicable [RegExp]s, where the name represents what is positively
   /// detected.
-  RegExp _suffixes,
+  late RegExp _suffixes,
       _particles,
       _punctuation,
       _whitespace = RegExp(r'\s+'),
@@ -78,7 +78,7 @@ class NameParser<T> {
 
   /// Internal storage for the [NameParserOutput] function, to be used to return the output of
   /// [parse].
-  NameParserOutput<T> _nameParserOutput;
+  late NameParserOutput<T> _nameParserOutput;
 
   /// Constructor for [NameParser], requiring a [NameParserOutput] to return as output.
   ///
@@ -90,19 +90,16 @@ class NameParser<T> {
   ///
   /// Since the default values of the optional parameters are strings, they are converted to
   /// case-insensitive [RegExp] objects here.
-  NameParser(NameParserOutput<T> nameParserOutput,
-      {Pattern suffixes = defaultSuffixes,
-      Pattern particles = defaultParticles,
-      Pattern punctuation = defaultPunctuation}) {
+  NameParser(
+    NameParserOutput<T> nameParserOutput, {
+    Pattern suffixes = defaultSuffixes,
+    Pattern particles = defaultParticles,
+    Pattern punctuation = defaultPunctuation,
+  }) {
     _nameParserOutput = nameParserOutput;
-    _suffixes =
-        suffixes is String ? RegExp(suffixes, caseSensitive: false) : suffixes;
-    _particles = particles is String
-        ? RegExp(particles, caseSensitive: false)
-        : particles;
-    _punctuation = punctuation is String
-        ? RegExp(punctuation, caseSensitive: false)
-        : punctuation;
+    _suffixes = RegExp(suffixes as String, caseSensitive: false);
+    _particles = RegExp(particles as String, caseSensitive: false);
+    _punctuation = RegExp(punctuation as String, caseSensitive: false);
   }
 
   /// Behaves the same as the constructor for [NameParser] except that the output format is
@@ -125,8 +122,8 @@ class NameParser<T> {
   ///
   /// All parameters of [T] are guaranteed to be non-null (if nothing exists for that parameter,
   /// an empty string will be given).
-  T parse(String text) {
-    if (text == null) text = '';
+  T parse(String? text) {
+    text ??= '';
     if (text.isEmpty) {
       return _nameParserOutput(text,
           given: '', droppingParticle: '', nonDroppingParticle: '', suffix: '');
@@ -135,9 +132,9 @@ class NameParser<T> {
     // Separate out obvious suffixes in the name. They could be anywhere, but they will be in the
     // correct order with themselves. Splits parts internally based on whitespace so that a comma
     // part with multiple suffixes will still be properly detected.
-    List<String> commaParts = text.split(_commas);
-    DoubleLinkedQueue<String> suffixParts = DoubleLinkedQueue();
-    DoubleLinkedQueue<String> nonSuffixParts = DoubleLinkedQueue();
+    var commaParts = text.split(_commas);
+    var suffixParts = DoubleLinkedQueue<String>();
+    var nonSuffixParts = DoubleLinkedQueue<String>();
     for (var part in commaParts) {
       if (part
           .replaceAll(_punctuation, '')
@@ -161,7 +158,7 @@ class NameParser<T> {
           .last
           .replaceAll(_punctuation, '')
           .contains(_suffixes)) {
-        List<String> lastParts = nonSuffixParts.removeLast().split(_whitespace);
+        var lastParts = nonSuffixParts.removeLast().split(_whitespace);
         while (
             lastParts.last.replaceAll(_punctuation, '').contains(_suffixes)) {
           suffixParts.addFirst(lastParts.removeLast());
@@ -181,8 +178,8 @@ class NameParser<T> {
 
     // There may be suffixes at the end that weren't comma-separated, so consume them if there exist
     // non-suffix parts.
-    List<String> spaceParts = name.split(_whitespace);
-    List<String> spacePartsNoPunctuation =
+    var spaceParts = name.split(_whitespace);
+    var spacePartsNoPunctuation =
         spaceParts.map((s) => s.replaceAll(_punctuation, '')).toList();
     if (spacePartsNoPunctuation.any((s) => !s.contains(_suffixes))) {
       while (spacePartsNoPunctuation.last.contains(_suffixes)) {
@@ -193,7 +190,7 @@ class NameParser<T> {
 
     // If there's a particle that isn't the last part, consume all the parts from the end up to
     // that point as the family name.
-    DoubleLinkedQueue<String> familyParts = DoubleLinkedQueue();
+    var familyParts = DoubleLinkedQueue<String>();
     if (spacePartsNoPunctuation.any((s) => s.contains(_particles)) &&
         !spacePartsNoPunctuation.last.contains(_particles)) {
       while (!spacePartsNoPunctuation.last.contains(_particles)) {
@@ -207,8 +204,8 @@ class NameParser<T> {
 
     // Consume any particles, calling ones that aren't lowercase non-dropping and any others as
     // dropping.
-    DoubleLinkedQueue<String> nonDroppingParticleParts = DoubleLinkedQueue();
-    DoubleLinkedQueue<String> droppingParticleParts = DoubleLinkedQueue();
+    var nonDroppingParticleParts = DoubleLinkedQueue<String>();
+    var droppingParticleParts = DoubleLinkedQueue<String>();
     while (spaceParts.isNotEmpty &&
         spacePartsNoPunctuation.last.contains(_particles)) {
       var particle = spacePartsNoPunctuation.removeLast();
